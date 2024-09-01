@@ -1,10 +1,8 @@
 package com.example.kalban_greenbag.config;
 
-import com.example.kalban_greenbag.entity.User;
 import com.example.kalban_greenbag.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,10 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-
 @Configuration
-public class AppConfig {
+public class JwtConfig {
 
     @Autowired
     UserRepository userRepository;

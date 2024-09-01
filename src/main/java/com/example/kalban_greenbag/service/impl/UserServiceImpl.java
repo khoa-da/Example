@@ -83,7 +83,9 @@ public class UserServiceImpl implements IUserService {
 
         jwtAuthenticationRespone.setStatus(user.getStatus());
         jwtAuthenticationRespone.setEmail(user.getEmail());
-        jwtAuthenticationRespone.setRole(user.getRole());
+        jwtAuthenticationRespone.setRoleName(user.getRole().getRoleName());
+        jwtAuthenticationRespone.setFullName(user.getFullName());
+        jwtAuthenticationRespone.setAddress(user.getAddress());
 
         var jwt = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
