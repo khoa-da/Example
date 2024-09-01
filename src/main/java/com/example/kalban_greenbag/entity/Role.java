@@ -13,22 +13,22 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "Categories")
-public class Category extends BaseEntity{
+@Table(name = "Roles")
+public class Role extends BaseEntity{
 
 
     @Size(max = 50)
     @NotNull
     @Nationalized
-    @Column(name = "CategoryName", nullable = false, length = 50)
-    private String categoryName;
+    @Column(name = "RoleName", nullable = false, length = 50)
+    private String roleName;
 
     @Nationalized
     @Lob
     @Column(name = "Description")
     private String description;
 
-    @OneToMany(mappedBy = "categoryID")
-    private Set<BaseModel> baseModels = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "role")
+    private Set<User> users = new LinkedHashSet<>();
 
 }

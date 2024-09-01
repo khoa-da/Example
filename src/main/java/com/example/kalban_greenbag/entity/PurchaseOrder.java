@@ -15,11 +15,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "PurchaseOrders")
-public class PurchaseOrder {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PurchaseOrderID", nullable = false)
-    private Integer id;
+public class PurchaseOrder extends BaseEntity{
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SupplierID")

@@ -9,11 +9,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-public class Inventory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "InventoryID", nullable = false)
-    private Integer id;
+public class Inventory extends BaseEntity{
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MaterialID")

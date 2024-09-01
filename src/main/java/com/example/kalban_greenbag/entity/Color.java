@@ -11,11 +11,8 @@ import org.hibernate.annotations.Nationalized;
 @Setter
 @Entity
 @Table(name = "Colors")
-public class Color {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ColorID", nullable = false)
-    private Integer id;
+public class Color extends BaseEntity{
+
 
     @Size(max = 30)
     @NotNull

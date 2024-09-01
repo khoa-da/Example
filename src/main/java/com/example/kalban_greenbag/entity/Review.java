@@ -11,11 +11,8 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "Reviews")
-public class Review {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ReviewID", nullable = false)
-    private Integer id;
+public class Review extends BaseEntity{
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
@@ -33,7 +30,6 @@ public class Review {
     @Column(name = "Comment")
     private String comment;
 
-    @Column(name = "CreatedAt")
-    private Instant createdAt;
+
 
 }

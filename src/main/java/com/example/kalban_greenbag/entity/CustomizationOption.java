@@ -15,11 +15,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "CustomizationOptions")
-public class CustomizationOption {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "OptionID", nullable = false)
-    private Integer id;
+public class CustomizationOption extends BaseEntity{
+
 
     @Size(max = 50)
     @NotNull
