@@ -15,11 +15,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "Orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "OrderID", nullable = false)
-    private Integer id;
+public class Order extends BaseEntity{
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID")
@@ -31,10 +28,7 @@ public class Order {
     @Column(name = "TotalAmount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
-    @Size(max = 20)
-    @Nationalized
-    @Column(name = "Status", length = 20)
-    private String status;
+
 
     @Nationalized
     @Lob

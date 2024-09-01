@@ -10,11 +10,8 @@ import org.hibernate.annotations.Nationalized;
 @Setter
 @Entity
 @Table(name = "ProductCustomizations")
-public class ProductCustomization {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ProductCustomizationID", nullable = false)
-    private Integer id;
+public class ProductCustomization extends BaseEntity{
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")

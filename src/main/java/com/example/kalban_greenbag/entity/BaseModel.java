@@ -15,11 +15,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "BaseModels")
-public class BaseModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "BaseModelID", nullable = false)
-    private Integer id;
+public class BaseModel extends BaseEntity{
+
 
     @Size(max = 100)
     @NotNull

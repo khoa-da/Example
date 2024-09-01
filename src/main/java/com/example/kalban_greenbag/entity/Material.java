@@ -15,11 +15,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "Materials")
-public class Material {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MaterialID", nullable = false)
-    private Integer id;
+public class Material extends BaseEntity{
+
 
     @Size(max = 50)
     @NotNull

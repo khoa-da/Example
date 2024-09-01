@@ -14,11 +14,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "Suppliers")
-public class Supplier {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SupplierID", nullable = false)
-    private Integer id;
+public class Supplier extends BaseEntity{
+
 
     @Size(max = 100)
     @NotNull

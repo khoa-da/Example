@@ -13,11 +13,8 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "Products")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ProductID", nullable = false)
-    private Integer id;
+public class Product extends BaseEntity{
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BaseModelID")
@@ -26,8 +23,7 @@ public class Product {
     @Column(name = "FinalPrice", precision = 10, scale = 2)
     private BigDecimal finalPrice;
 
-    @Column(name = "CreatedAt")
-    private Instant createdAt;
+
 
     @OneToMany(mappedBy = "productID")
     private Set<OrderItem> orderItems = new LinkedHashSet<>();

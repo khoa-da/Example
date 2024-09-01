@@ -1,4 +1,4 @@
-package com.example.kalban_greenbag.constant;
+package com.example.kalban_greenbag.enums;
 
 public enum RoleEnum {
     ADMIN,              // Quản trị viên hệ thống

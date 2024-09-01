@@ -6,20 +6,20 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "Users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserID", nullable = false)
-    private Integer id;
+public class User extends BaseEntity implements UserDetails {
+
 
     @Size(max = 50)
     @NotNull
@@ -54,16 +54,34 @@ public class User {
     @Column(name = "PhoneNumber", length = 20)
     private String phoneNumber;
 
-    @Column(name = "CreatedAt")
-    private Instant createdAt;
 
-    @Column(name = "UpdatedAt")
-    private Instant updatedAt;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "RoleID", nullable = false)
+    private Role role;
 
-    @OneToMany(mappedBy = "userID")
-    private Set<Order> orders = new LinkedHashSet<>();
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.getRoleName()));
+    }
 
-    @OneToMany(mappedBy = "userID")
-    private Set<Review> reviews = new LinkedHashSet<>();
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
