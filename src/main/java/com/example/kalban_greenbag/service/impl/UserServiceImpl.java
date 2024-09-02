@@ -2,15 +2,19 @@ package com.example.kalban_greenbag.service.impl;
 
 import com.example.kalban_greenbag.constant.ConstError;
 import com.example.kalban_greenbag.constant.ConstStatus;
+import com.example.kalban_greenbag.converter.RoleConverter;
+import com.example.kalban_greenbag.dto.request.user.CreateUserRequest;
 import com.example.kalban_greenbag.dto.request.user.LoginRequest;
 import com.example.kalban_greenbag.dto.response.JwtAuthenticationResponse;
 import com.example.kalban_greenbag.dto.response.user.UserResponse;
+import com.example.kalban_greenbag.entity.Role;
 import com.example.kalban_greenbag.entity.User;
 import com.example.kalban_greenbag.enums.ErrorCode;
 import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
 import com.example.kalban_greenbag.repository.UserRepository;
 import com.example.kalban_greenbag.service.IJWTService;
+import com.example.kalban_greenbag.service.IRoleService;
 import com.example.kalban_greenbag.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +40,8 @@ public class UserServiceImpl implements IUserService {
     AuthenticationManager authenticationManager;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    private IRoleService roleService;
 
     @Override
     public UserResponse findById(int id) throws BaseException {
@@ -70,6 +76,41 @@ public class UserServiceImpl implements IUserService {
         // Set the authentication in the SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return MappingjwtAuthenticationRespone(user);
+    }
+
+    @Override
+    public JwtAuthenticationResponse create(CreateUserRequest createUserRequest) throws BaseException {
+        try{
+
+            if (userRepository.findByUsername(createUserRequest.getUsername()).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.User.USERNAME_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+            // check dupplicate email
+            if (userRepository.findByEmail(createUserRequest.getEmail()).isPresent()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.User.EMAIL_EXISTED, ErrorCode.ERROR_500.getMessage());
+            }
+
+            User user = new User();
+            user.setUsername(createUserRequest.getUsername());
+            user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+            user.setStatus(ConstStatus.ACTIVE_STATUS);
+            user.setEmail(createUserRequest.getEmail());
+            user.setPhoneNumber(createUserRequest.getPhoneNumber());
+
+
+            Role role = RoleConverter.responseToEntity(roleService.findByName(createUserRequest.getRoleName()));
+
+            user.setRole(role);
+
+            userRepository.save(user);
+            return MappingjwtAuthenticationRespone(user);
+        }catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
     }
 
     private JwtAuthenticationResponse MappingjwtAuthenticationRespone(User user) throws BaseException {
