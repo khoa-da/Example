@@ -7,4 +7,8 @@ public class ConstError {
         public static final String EMAIL_EXISTED = "Email existed";
 
     }
+
+    public static class Role {
+        public static final String ROLE_NOT_FOUND = "Role not found";
+    }
 }
