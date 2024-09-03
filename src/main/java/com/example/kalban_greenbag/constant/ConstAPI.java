@@ -9,6 +9,9 @@ public class ConstAPI {
     public static class UserAPI {
 
         public static final String CREATE_ACCOUNT = "api/v1/account/create";
+        public static final String GET_ACCOUNT_BY_ID = "api/v1/account/";
+        public static final String GET_ALL_ACCOUNT = "api/v1/account";
+        public static  final String GET_ALL_ACCOUNT_ACTIVE = "api/v1/account-active";
 
 
     }

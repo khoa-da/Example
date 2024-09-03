@@ -4,7 +4,9 @@ import com.example.kalban_greenbag.constant.ConstAPI;
 import com.example.kalban_greenbag.dto.request.user.CreateUserRequest;
 import com.example.kalban_greenbag.dto.request.user.LoginRequest;
 import com.example.kalban_greenbag.dto.response.JwtAuthenticationResponse;
+import com.example.kalban_greenbag.dto.response.user.UserResponse;
 import com.example.kalban_greenbag.exception.BaseException;
+import com.example.kalban_greenbag.model.PagingModel;
 import com.example.kalban_greenbag.service.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @CrossOrigin
 @RestController
@@ -36,5 +40,27 @@ private IUserService userService;
         return userService.create(createUserRequest);
     }
 
+    @Operation(summary =  "Get account by id", description = "API get account by id")
+    @GetMapping(value = ConstAPI.UserAPI.GET_ACCOUNT_BY_ID + "{id}")
+    public UserResponse findById(@PathVariable("id") UUID id) throws BaseException {
+        log.info("Getting account with id: {}", id);
+        return userService.findById(id);
+    }
 
+
+    @Operation(summary =  "Get all user", description = "API get all user")
+    @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT)
+    public PagingModel<UserResponse> getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all accounts with page: {}, limit: {}", page, limit);
+
+        return userService.getAll(page, limit);
+    }
+
+    @Operation(summary =  "Get all user", description = "API get all user")
+    @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT_ACTIVE)
+    public PagingModel<UserResponse> getAllByStatusIsActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        log.info("Getting all accounts with page: {}, limit: {}", page, limit);
+
+        return userService.findAllByStatusTrue(page, limit);
+    }
 }
