@@ -3,6 +3,7 @@ package com.example.kalban_greenbag.service.impl;
 import com.example.kalban_greenbag.constant.ConstError;
 import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.converter.RoleConverter;
+import com.example.kalban_greenbag.converter.UserConverter;
 import com.example.kalban_greenbag.dto.request.user.CreateUserRequest;
 import com.example.kalban_greenbag.dto.request.user.LoginRequest;
 import com.example.kalban_greenbag.dto.response.JwtAuthenticationResponse;
@@ -19,6 +20,8 @@ import com.example.kalban_greenbag.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +30,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -44,18 +49,80 @@ public class UserServiceImpl implements IUserService {
     private IRoleService roleService;
 
     @Override
-    public UserResponse findById(int id) throws BaseException {
-        return null;
+    public UserResponse findById(UUID id) throws BaseException {
+        try{
+        Optional<User> user = userRepository.findById(id);
+        boolean userIsExit = user.isPresent();
+
+            if (!userIsExit) {
+                logger.warn("Account with id {} is not found", id);
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.User.USER_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            return UserConverter.toResponse( user.get());
+        }catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
     }
 
     @Override
-    public PagingModel getAll(Integer page, Integer limit) throws BaseException {
-        return null;
+    public PagingModel<UserResponse> getAll(Integer page, Integer limit) throws BaseException {
+        try{
+            if(page == null || limit == null){
+                page = 1;
+                limit = 10;
+            }
+            PagingModel<UserResponse> result = new PagingModel<>();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+
+            List<User> users = userRepository.findAllByOrderByCreatedDate(pageable);
+            List<UserResponse> userResponses = users.stream().map(UserConverter::toResponse).toList();
+            result.setListResult(userResponses);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItem()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+        }catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+    private int totalItem() {
+        return (int) userRepository.count();
+    }
+    private int totalItemWithStatusActive() {
+        return  userRepository.countByStatus(ConstStatus.ACTIVE_STATUS);
     }
 
     @Override
-    public PagingModel findAllByStatusTrue(Integer page, Integer limit) throws BaseException {
-        return null;
+    public PagingModel<UserResponse> findAllByStatusTrue(Integer page, Integer limit) throws BaseException {
+        try{
+            if(page == null || limit == null){
+                page = 1;
+                limit = 10;
+            }
+            PagingModel<UserResponse> result = new PagingModel<>();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+
+            List<User> users = userRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+            List<UserResponse> userResponses = users.stream().map(UserConverter::toResponse).toList();
+            result.setListResult(userResponses);
+
+            result.setTotalPage(((int) Math.ceil((double) (totalItemWithStatusActive()) / limit)));
+            result.setLimit(limit);
+
+            return result;
+        }catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
 
     @Override
@@ -142,7 +209,7 @@ public class UserServiceImpl implements IUserService {
 
             Optional<User> userById;
             userById = userRepository.findByEmail(emailOrUserName);
-            if (!userById.isPresent()) {
+            if (userById.isEmpty()) {
                 userById = userRepository.findByUsername(emailOrUserName);
             }
 

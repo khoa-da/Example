@@ -3,10 +3,12 @@ package com.example.kalban_greenbag.service;
 import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
 
+import java.util.UUID;
+
 public interface IGenericService<T> {
-    T findById(int id) throws BaseException;
+    T findById(UUID id) throws BaseException;
 
-    PagingModel getAll(Integer page, Integer limit) throws BaseException;
+    PagingModel<T> getAll(Integer page, Integer limit) throws BaseException;
 
-    PagingModel findAllByStatusTrue(Integer page, Integer limit) throws BaseException;
+    PagingModel<T> findAllByStatusTrue(Integer page, Integer limit) throws BaseException;
 }
