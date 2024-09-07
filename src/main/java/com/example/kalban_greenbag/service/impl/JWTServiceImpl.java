@@ -53,7 +53,7 @@ public class JWTServiceImpl implements IJWTService {
         return Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token).getBody();
     }
 
-    private Key getSigninKey(){
+    public Key getSigninKey(){
         byte[] key = Decoders.BASE64.decode("QVNERjEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubQ=="); // Secret key
         return Keys.hmacShaKeyFor(key);
     }
