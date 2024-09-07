@@ -1,5 +1,6 @@
 package com.example.kalban_greenbag.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,6 +29,7 @@ public class Role extends BaseEntity{
     @Column(name = "Description")
     private String description;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "role")
     private Set<User> users = new LinkedHashSet<>();
 

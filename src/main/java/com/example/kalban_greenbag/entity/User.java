@@ -56,7 +56,7 @@ public class User extends BaseEntity implements UserDetails {
 
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne()
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
 

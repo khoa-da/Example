@@ -20,13 +20,7 @@ import java.util.List;
 @Configuration
 @OpenAPIDefinition(
         info = @io.swagger.v3.oas.annotations.info.Info(title = "My API", version = "v1", description = "API Documentation"),
-        security = {@io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "apiKey"), @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth")}
-)
-@io.swagger.v3.oas.annotations.security.SecurityScheme(
-        name = "apiKey",
-        type = SecuritySchemeType.APIKEY,
-        in = SecuritySchemeIn.HEADER,
-        paramName = "X-API-KEY"
+        security = {@io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth")}
 )
 @io.swagger.v3.oas.annotations.security.SecurityScheme(
         name = "bearerAuth",
