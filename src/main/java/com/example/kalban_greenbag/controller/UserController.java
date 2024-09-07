@@ -26,7 +26,7 @@ import java.util.UUID;
 @Tag(name = "User Controller")
 public class UserController {
     @Autowired
-private IUserService userService;
+    private IUserService userService;
 
     @Operation(summary = "Login", description = "API login ")
     @PostMapping(value = ConstAPI.AuthenticationAPI.LOGIN_WITH_PASSWORD_USERNAME)

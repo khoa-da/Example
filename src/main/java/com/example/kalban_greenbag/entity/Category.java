@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class Category extends BaseEntity{
     @Column(name = "Description")
     private String description;
 
-    @OneToMany(mappedBy = "categoryID")
+    @OneToMany(mappedBy = "category", fetch= FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<BaseModel> baseModels = new LinkedHashSet<>();
 
 }

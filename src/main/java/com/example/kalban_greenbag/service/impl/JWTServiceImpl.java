@@ -1,5 +1,7 @@
 package com.example.kalban_greenbag.service.impl;
 
+
+import com.example.kalban_greenbag.constant.ConstError;
 import com.example.kalban_greenbag.enums.ErrorCode;
 import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.service.IJWTService;
@@ -79,5 +81,12 @@ public class JWTServiceImpl implements IJWTService {
 
     private boolean isTokenExpired(String token){
         return extractClaims(token, Claims::getExpiration).before(new Date());
+    }
+
+    public String extractBearerToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7); // Bỏ tiền tố "Bearer "
+        }
+        return null;
     }
 }

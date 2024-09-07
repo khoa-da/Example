@@ -13,4 +13,6 @@ public interface IJWTService {
     boolean isTokenValid(String token, UserDetails userDetails) throws BaseException;
 
     String generateRefreshToken(Map<String, Object> extraClaims, UserDetails userDetails);
+
+    String extractBearerToken(String authorizationHeader);
 }

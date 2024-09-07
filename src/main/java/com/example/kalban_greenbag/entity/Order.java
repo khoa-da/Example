@@ -28,8 +28,6 @@ public class Order extends BaseEntity{
     @Column(name = "TotalAmount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
-
-
     @Nationalized
     @Lob
     @Column(name = "ShippingAddress")
