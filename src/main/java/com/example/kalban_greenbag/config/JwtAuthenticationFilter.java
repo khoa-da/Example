@@ -1,14 +1,19 @@
 package com.example.kalban_greenbag.config;
 
+import com.example.kalban_greenbag.enums.ErrorCode;
 import com.example.kalban_greenbag.exception.BaseException;
+import com.example.kalban_greenbag.exception.ErrorResponse;
 import com.example.kalban_greenbag.service.IJWTService;
 import com.example.kalban_greenbag.service.impl.UserServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,9 +48,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUserName(jwt);
-        try {
 
+        try {
+            userEmail = jwtService.extractUserName(jwt);
             if (!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
                 if (jwtService.isTokenValid(jwt, userDetails)) {
@@ -58,15 +63,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     securityContext.setAuthentication(token);
                     SecurityContextHolder.setContext(securityContext);
+                    logger.info("JWT Authentication successful. User: " + userDetails.getUsername());
+                    logger.info("Authorities: " + userDetails.getAuthorities());
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (Exception baseException) {
-            try {
-                throw new BaseException(401, "Unauthorized", baseException.getMessage());
-            } catch (BaseException e) {
-                throw new RuntimeException(e);
-            }
+        } catch (BaseException e) {
+            logger.error("JWT Authentication failed: {}", e.fillInStackTrace());
+            handleAuthenticationException(response, e);
+        } catch (Exception e) {
+            logger.error("Unexpected error during authentication: {}", e.fillInStackTrace());
+            handleAuthenticationException(response,
+                    new BaseException(ErrorCode.ERROR_500.getCode(), "Internal server error", ErrorCode.ERROR_500.getMessage()));
         }
     }
+    private void handleAuthenticationException(HttpServletResponse response, BaseException e) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        ErrorResponse errorResponse = new ErrorResponse(403, e.getMessage(), "Forbidden");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+    }
 }
+

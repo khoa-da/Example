@@ -49,7 +49,7 @@ private IUserService userService;
         return userService.findById(id);
     }
 
-
+    @PreAuthorize("hasRole('admin')")
     @Operation(summary =  "Get all user", description = "API get all user")
     @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT)
     public PagingModel<UserResponse> getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
@@ -58,6 +58,7 @@ private IUserService userService;
         return userService.getAll(page, limit);
     }
 
+    @PreAuthorize("hasRole('user')")
     @Operation(summary =  "Get all user", description = "API get all user")
     @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT_ACTIVE)
     public PagingModel<UserResponse> getAllByStatusIsActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
