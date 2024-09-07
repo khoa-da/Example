@@ -24,7 +24,7 @@ import java.util.UUID;
 @Tag(name = "User Controller")
 public class UserController {
     @Autowired
-private IUserService userService;
+    private IUserService userService;
 
     @Operation(summary = "Login", description = "API login ")
     @PostMapping(value = ConstAPI.AuthenticationAPI.LOGIN_WITH_PASSWORD_USERNAME)
@@ -46,7 +46,6 @@ private IUserService userService;
         log.info("Getting account with id: {}", id);
         return userService.findById(id);
     }
-
 
     @Operation(summary =  "Get all user", description = "API get all user")
     @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT)

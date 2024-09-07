@@ -15,4 +15,28 @@ public class ConstAPI {
 
 
     }
+
+    public static class CategoryAPI {
+
+        public static final String  CREATE_CATEGORY = "api/v1/category/create";
+        public static final String  UPDATE_CATEGORY = "api/v1/category/update";
+        public static final String  DELETE_CATEGORY = "api/v1/category/delete/";
+        public static final String  GET_CATEGORY_BY_ID = "api/v1/category/";
+        public static final String  GET_ALL_CATEGORY = "api/v1/category";
+        public static final String  GET_ALL_CATEGORY_STATUS_TRUE = "api/v1/category/category-status-active";
+
+    }
+
+    public static class BaseModelAPI {
+
+        public static final String CREATE_BASE_MODEL = "api/v1/base-model/create";
+        public static final String UPDATE_BASE_MODEL = "api/v1/base-model/update";
+        public static final String DELETE_BASE_MODEL = "api/v1/base-model/delete/";
+        public static final String GET_BASE_MODEL_BY_ID = "api/v1/base-model/";
+        public static final String GET_ALL_BASE_MODELS = "api/v1/base-model";
+        public static final String GET_ALL_BASE_MODELS_BY_CATEGORY = "api/v1/base-model/category/";
+        public static final String GET_ALL_BASE_MODELS_STATUS_ACTIVE = "api/v1/base-model/base-model-status-active";
+
+    }
+
 }

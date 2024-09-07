@@ -34,7 +34,7 @@ public class BaseModel extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CategoryID")
-    private Category categoryID;
+    private Category category;
 
     @OneToMany(mappedBy = "baseModelID")
     private Set<CustomizationOption> customizationOptions = new LinkedHashSet<>();

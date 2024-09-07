@@ -23,7 +23,6 @@ public class RoleRequest {
 
     private String roleName;
 
-
     private String description;
 
     private String status;

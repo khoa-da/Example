@@ -17,7 +17,6 @@ import java.util.Set;
 @Table(name = "Materials")
 public class Material extends BaseEntity{
 
-
     @Size(max = 50)
     @NotNull
     @Nationalized
