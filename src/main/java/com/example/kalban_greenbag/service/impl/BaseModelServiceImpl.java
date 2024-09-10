@@ -2,7 +2,7 @@ package com.example.kalban_greenbag.service.impl;
 
 import com.example.kalban_greenbag.constant.ConstError;
 import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
-import com.example.kalban_greenbag.converter.BaseModelConverter;
+import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.converter.CategoryConverter;
 import com.example.kalban_greenbag.dto.request.base_model.AddBaseModelRequest;
 import com.example.kalban_greenbag.dto.request.base_model.UpdateBaseModelRequest;
@@ -17,6 +17,7 @@ import com.example.kalban_greenbag.repository.BaseModelRepository;
 import com.example.kalban_greenbag.repository.CategoryRepository;
 import com.example.kalban_greenbag.service.IBaseModelService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
+import org.hibernate.query.Page;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BaseModelServiceImpl implements IBaseModelService {
@@ -184,7 +186,9 @@ public class BaseModelServiceImpl implements IBaseModelService {
                 baseModelResponsesList = (List<BaseModelResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel);
             } else {
                 List<BaseModel> baseModels = baseModelRepository.findAllByOrderByCreatedDate(pageable);
-//                baseModelResponsesList = baseModels.stream().map(BaseModelConverter::entityToResponse).toList();
+                baseModelResponsesList = baseModels.stream()
+                        .map(baseModel -> modelMapper.map(baseModel, BaseModelResponse.class))
+                        .collect(Collectors.toList());
                 redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel, baseModelResponsesList);
             }
 
@@ -201,6 +205,34 @@ public class BaseModelServiceImpl implements IBaseModelService {
 
     @Override
     public PagingModel<BaseModelResponse> findAllByStatusTrue(Integer page, Integer limit) throws BaseException {
-        return null;
+        try {
+            PagingModel<BaseModelResponse> result = new PagingModel<>();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            String hashKeyForBaseModel = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "all:" + "active:" + page + ":" + limit;
+
+            List<BaseModelResponse> baseModelResponseList;
+
+            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel)) {
+                baseModelResponseList = (List<BaseModelResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel);
+            } else {
+                List<BaseModel> baseModels = baseModelRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+                baseModelResponseList = baseModels.stream()
+                        .map(baseModel -> modelMapper.map(baseModel, BaseModelResponse.class))
+                        .collect(Collectors.toList());
+                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel, baseModelResponseList);
+            }
+
+            result.setListResult(baseModelResponseList);
+
+            result.setTotalPage((int) Math.ceil((double) totalItem() / limit));
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception baseException) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
     }
+
 }
