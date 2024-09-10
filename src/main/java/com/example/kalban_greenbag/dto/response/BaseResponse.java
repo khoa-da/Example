@@ -24,6 +24,8 @@ public class BaseResponse implements Serializable {
 
     private String modifiedBy;
 
+    private String status;
+
     public Date getCreatedDate() {
         if (createdDate == null) {
             return null;

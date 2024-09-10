@@ -2,6 +2,8 @@ package com.example.kalban_greenbag.dto.response.base_model;
 
 import com.example.kalban_greenbag.dto.response.BaseResponse;
 import com.example.kalban_greenbag.dto.response.category.CategoryResponse;
+import com.example.kalban_greenbag.dto.response.customization_option.CustomizationOptionResponse;
+import com.example.kalban_greenbag.dto.response.product.ProductResponse;
 import com.example.kalban_greenbag.entity.Category;
 import lombok.*;
 
@@ -22,9 +24,9 @@ public class BaseModelResponse extends BaseResponse implements Serializable {
 
     private BigDecimal basePrice;
 
-    private CategoryResponse category;
+//    private Category category;
 
-//    private Set<CustomizationOptionResponse> customizationOptions;
-//
-//    private Set<ProductResponse> products;
+    private Set<CustomizationOptionResponse> customizationOptions;
+
+    private Set<ProductResponse> products;
 }
