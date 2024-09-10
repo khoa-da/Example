@@ -21,6 +21,15 @@ public class ConstError {
         public static final String CATEGORY_NAME_NOT_EXISTED = "Category name not existed";
 
     }
+    public static class Product {
+        public static final String PRODUCT_NOT_FOUND = "Product not found";
+        public static final String PRODUCT_EXISTED = "Product existed";
+        public static final String PRODUCT_NAME_EXISTED = "Product name existed";
+        public static final String PRODUCT_DESCRIPTION_EXISTED = "Product description existed";
+        public static final String PRODUCT_NAME_NOT_FOUND = "Product name not found";
+        public static final String PRODUCT_DESCRIPTION_NOT_FOUND = "Product description not found";
+        public static final String PRODUCT_NAME_NOT_EXISTED = "Product name not existed";
+    }
 
     public static class Role {
         public static final String ROLE_NOT_FOUND = "Role not found";

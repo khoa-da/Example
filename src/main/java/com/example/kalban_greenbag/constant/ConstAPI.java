@@ -15,6 +15,14 @@ public class ConstAPI {
 
 
     }
+    public static class ProductAPI {
+        public static final String CREATE_PRODUCT = "api/v1/product/create";
+        public static final String UPDATE_PRODUCT = "api/v1/product/update";
+        public static final String DELETE_PRODUCT = "api/v1/product/delete/";
+        public static final String GET_PRODUCT_BY_ID = "api/v1/product/";
+        public static final String GET_ALL_PRODUCT = "api/v1/product";
+        public static final String GET_ALL_PRODUCT_STATUS_TRUE = "api/v1/product/product-status-active";
+    }
 
     public static class CategoryAPI {
 

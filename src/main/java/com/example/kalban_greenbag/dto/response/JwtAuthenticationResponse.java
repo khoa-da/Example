@@ -1,7 +1,6 @@
 package com.example.kalban_greenbag.dto.response;
 
-import com.example.kalban_greenbag.dto.UserDTO;
-import com.example.kalban_greenbag.entity.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
