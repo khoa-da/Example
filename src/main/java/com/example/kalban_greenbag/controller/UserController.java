@@ -14,6 +14,8 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -47,6 +49,7 @@ public class UserController {
         return userService.findById(id);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @Operation(summary =  "Get all user", description = "API get all user")
     @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT)
     public PagingModel<UserResponse> getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
@@ -55,6 +58,7 @@ public class UserController {
         return userService.getAll(page, limit);
     }
 
+    @PreAuthorize("hasRole('user')")
     @Operation(summary =  "Get all user", description = "API get all user")
     @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT_ACTIVE)
     public PagingModel<UserResponse> getAllByStatusIsActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {

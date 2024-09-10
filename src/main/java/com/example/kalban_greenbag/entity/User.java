@@ -56,13 +56,13 @@ public class User extends BaseEntity implements UserDetails {
 
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne()
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getRoleName()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
     }
 
     @Override
