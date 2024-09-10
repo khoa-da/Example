@@ -10,7 +10,6 @@ public class SecurityUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.isAuthenticated()) {
-            // Trả về username hoặc principal đã được lưu trong Authentication
             Object principal = authentication.getPrincipal();
 
             if (principal instanceof UserDetails) {
