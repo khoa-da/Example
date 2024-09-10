@@ -40,6 +40,7 @@ public class ConstError {
         public static final String BASE_MODEL_NOT_FOUND = "Base model not found";
     }
 
+
     public static class Review {
         public static final String REVIEW_NOT_FOUND = "Review not found";
         public static final String REVIEW_EXISTED = "Review existed";
@@ -61,6 +62,18 @@ public class ConstError {
         public static final String ORDER_SHIPPING_ADDRESS_INVALID = "Order shipping address is invalid";
         public static final String ORDER_CANCELLATION_FAILED = "Order cancellation failed";
         public static final String NO_COMPLETED_ORDERS = "No completed orders";
+
+    public static class CustomizationOption {
+        public static final String CUSTOMIZATION_OPTION_NOT_FOUND = "Customization option not found";
+        public static final String CUSTOMIZATION_OPTION_EXISTED = "Customization option existed";
+        public static final String CUSTOMIZATION_OPTION_NAME_EXISTED = "Customization option name existed";
+        public static final String CUSTOMIZATION_OPTION_TYPE_EXISTED = "Customization option type existed";
+        public static final String CUSTOMIZATION_OPTION_ADDITIONAL_PRICE_EXISTED = "Customization option additional price existed";
+        public static final String CUSTOMIZATION_OPTION_NAME_NOT_FOUND = "Customization option name not found";
+        public static final String CUSTOMIZATION_OPTION_TYPE_NOT_FOUND = "Customization option type not found";
+        public static final String CUSTOMIZATION_OPTION_ADDITIONAL_PRICE_NOT_FOUND = "Customization option additional price not found";
+        public static final String CUSTOMIZATION_OPTION_NAME_NOT_EXISTED = "Customization option name not existed";
+
     }
 
 }

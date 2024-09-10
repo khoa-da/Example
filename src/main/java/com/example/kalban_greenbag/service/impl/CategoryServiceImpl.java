@@ -5,6 +5,7 @@ import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
 import com.example.kalban_greenbag.converter.CategoryConverter;
 import com.example.kalban_greenbag.dto.request.category.AddCategoryRequest;
 import com.example.kalban_greenbag.dto.request.category.UpdateCategoryRequest;
+import com.example.kalban_greenbag.dto.response.base_model.BaseModelResponse;
 import com.example.kalban_greenbag.dto.response.category.CategoryResponse;
 import com.example.kalban_greenbag.entity.Category;
 import com.example.kalban_greenbag.constant.ConstStatus;
@@ -14,6 +15,7 @@ import com.example.kalban_greenbag.model.PagingModel;
 import com.example.kalban_greenbag.repository.CategoryRepository;
 import com.example.kalban_greenbag.service.ICategoryService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
+import com.example.kalban_greenbag.utils.ValidateUtil;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -25,10 +27,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CategoryServiceImpl implements ICategoryService {
@@ -64,8 +63,10 @@ public class CategoryServiceImpl implements ICategoryService {
 
             CategoryResponse savedCategoryResponse = modelMapper.map(savedCategory, CategoryResponse.class);
 
-            String hashKeyForNewCategory = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + savedCategory.getId().toString();
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForNewCategory, savedCategoryResponse);
+            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
+            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+                redisTemplate.delete(keysToDelete);
+            }
 
             return savedCategoryResponse;
 
@@ -85,9 +86,9 @@ public class CategoryServiceImpl implements ICategoryService {
             String modifier = SecurityUtil.getCurrentUsername();
 
             Category category = categoryRepository.findById(updateCategoryRequest.getId())
-                    .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
+                    .orElseThrow(() -> new BaseException(ErrorCode.ERROR_500.getCode(),
                             ConstError.Category.CATEGORY_NOT_FOUND,
-                            ErrorCode.ERROR_404.getMessage()));
+                            ErrorCode.ERROR_500.getMessage()));
 
             if (updateCategoryRequest.getCategoryName() != null) {
                 category.setCategoryName(updateCategoryRequest.getCategoryName());
@@ -100,13 +101,14 @@ public class CategoryServiceImpl implements ICategoryService {
             }
 
             category.setModifiedBy(modifier);
-            Category savedCategory = categoryRepository.save(category);
+            Category updatedCategory = categoryRepository.save(category);
 
-            String hashKeyForCategory = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + category.getId().toString();
-            redisTemplate.opsForHash().delete(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory);
+            CategoryResponse updatedCategoryResponse = modelMapper.map(updatedCategory, CategoryResponse.class);
 
-            CategoryResponse updatedCategoryResponse = modelMapper.map(savedCategory, CategoryResponse.class);
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory, updatedCategoryResponse);
+            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
 
             return updatedCategoryResponse;
 
@@ -120,31 +122,27 @@ public class CategoryServiceImpl implements ICategoryService {
         }
     }
 
+
     @Override
     public Boolean changeStatus(UUID categoryId) throws BaseException {
         try {
             String modifier = SecurityUtil.getCurrentUsername();
 
-            String hashKeyForCategory = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + categoryId.toString();
-            CategoryResponse categoryResponseByRedis = (CategoryResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory);
-
-            if (categoryResponseByRedis != null) {
-                if (categoryResponseByRedis.getStatus().equals(ConstStatus.INACTIVE_STATUS)) {
-                    return false;
-                }
-            }
-
             Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
+                    .orElseThrow(() -> new BaseException(ErrorCode.ERROR_500.getCode(),
                             ConstError.Category.CATEGORY_NOT_FOUND,
-                            ErrorCode.ERROR_404.getMessage()));
+                            ErrorCode.ERROR_500.getMessage()));
 
+            // Update the category's status and save the changes
             category.setStatus(ConstStatus.INACTIVE_STATUS);
             category.setModifiedBy(modifier);
             categoryRepository.save(category);
 
-            CategoryResponse updatedCategoryResponse = modelMapper.map(category, CategoryResponse.class);
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory, updatedCategoryResponse);
+            // Delete all related cache entries
+            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
+            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+                redisTemplate.delete(keysToDelete);
+            }
 
             return true;
         } catch (Exception exception) {
@@ -171,8 +169,7 @@ public class CategoryServiceImpl implements ICategoryService {
             boolean isCategoryExist = categoryById.isPresent();
 
             if (!isCategoryExist) {
-                logger.warn("Category with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Category.CATEGORY_NOT_FOUND, ErrorCode.ERROR_404.getMessage());
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Category.CATEGORY_NOT_FOUND, ErrorCode.ERROR_404.getMessage());
             }
 
             CategoryResponse categoryResponse = modelMapper.map(categoryById.get(), CategoryResponse.class);
@@ -191,6 +188,12 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public PagingModel<CategoryResponse> getAll(Integer page, Integer limit) throws BaseException {
         try {
+            if (page == null || page < 1) {
+                page = 1;
+            }
+            if (limit == null || limit < 1) {
+                limit = 10;
+            }
             PagingModel result = new PagingModel();
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
@@ -221,6 +224,12 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public PagingModel<CategoryResponse> findAllByStatusTrue(Integer page, Integer limit) throws BaseException {
         try {
+            if (page == null || page < 1) {
+                page = 1;
+            }
+            if (limit == null || limit < 1) {
+                limit = 10;
+            }
             PagingModel result = new PagingModel();
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);

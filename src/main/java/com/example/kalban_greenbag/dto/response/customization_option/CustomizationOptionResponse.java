@@ -20,10 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class CustomizationOptionResponse extends BaseResponse implements Serializable {
-
     private String optionName;
     private String optionType;
     private BigDecimal additionalPrice;
-//    private BaseModel baseModelID;
-    private Set<ProductCustomization> productCustomizations;
 }

@@ -17,7 +17,6 @@ public class UpdateBaseModelRequest {
     private UUID id;
 
     @Size(max = 100, message = "Name cannot exceed 100 characters")
-    @NotNull
     @Nationalized
     private String modelName;
 
@@ -26,8 +25,6 @@ public class UpdateBaseModelRequest {
     private String description;
 
     @DecimalMin(value = "0.00", message = "Base price must be at least 0")
-//    @DecimalMax(value = "1000000.00", message = "Base price must be less than or equal to 10,000")
-    @NotNull(message = "Base price cannot be null")
     private BigDecimal basePrice;
 
     @NotNull
