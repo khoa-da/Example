@@ -40,4 +40,27 @@ public class ConstError {
         public static final String BASE_MODEL_NOT_FOUND = "Base model not found";
     }
 
+    public static class Review {
+        public static final String REVIEW_NOT_FOUND = "Review not found";
+        public static final String REVIEW_EXISTED = "Review existed";
+        public static final String REVIEW_TEXT_EMPTY = "Review text is empty";
+        public static final String REVIEW_RATING_INVALID = "Review rating is invalid";
+        public static final String REVIEW_USER_NOT_FOUND = "Review user not found";
+        public static final String REVIEW_PRODUCT_NOT_FOUND = "Review product not found";
+        public static final String REVIEW_ALREADY_SUBMITTED = "Review already submitted";
+    }
+
+    public static class Order {
+        public static final String ORDER_NOT_FOUND = "Order not found";
+        public static final String ORDER_ALREADY_EXISTED = "Order already existed";
+        public static final String ORDER_STATUS_INVALID = "Order status is invalid";
+        public static final String ORDER_TOTAL_INVALID = "Order total is invalid";
+        public static final String ORDER_PAYMENT_FAILED = "Order payment failed";
+        public static final String ORDER_USER_NOT_FOUND = "Order user not found";
+        public static final String ORDER_PRODUCT_NOT_FOUND = "Order product not found";
+        public static final String ORDER_SHIPPING_ADDRESS_INVALID = "Order shipping address is invalid";
+        public static final String ORDER_CANCELLATION_FAILED = "Order cancellation failed";
+        public static final String NO_COMPLETED_ORDERS = "No completed orders";
+    }
+
 }

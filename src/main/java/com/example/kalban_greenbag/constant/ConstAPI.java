@@ -47,4 +47,14 @@ public class ConstAPI {
 
     }
 
+    public static class ReviewAPI{
+        public static final String CREATE_REVIEW = "api/v1/review/create";
+        public static final String UPDATE_REVIEW = "api/v1/review/update";
+        public static final String DELETE_REVIEW = "api/v1/review/delete/";
+        public static final String GET_REVIEW_BY_ID = "api/v1/review/";
+        public static final String GET_ALL_REVIEWS = "api/v1/review";
+        public static final String GET_REVIEWS_BY_PRODUCT_ID = "api/v1/review/product/";
+        public static final String GET_ALL_REVIEWS_STATUS_ACTIVE = "api/v1/review/review-status-active";
+    }
+
 }
