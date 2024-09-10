@@ -9,6 +9,11 @@ public class ConstError {
         public static final String USERNAME_EXISTED = "Username existed";
         public static final String EMAIL_EXISTED = "Email existed";
         public static final String INVALID_AUTHORIZATION_HEADER = "Invalid authorization header";
+        public static final String USER_NOT_AUTHENTICATED = "User not authenticated";
+    }
+
+    public static class Role {
+        public static final String ROLE_NOT_FOUND = "Role not found";
     }
 
     public static class Category {
@@ -31,7 +36,8 @@ public class ConstError {
         public static final String PRODUCT_NAME_NOT_EXISTED = "Product name not existed";
     }
 
-    public static class Role {
-        public static final String ROLE_NOT_FOUND = "Role not found";
+    public static class BaseModel {
+        public static final String BASE_MODEL_NOT_FOUND = "Base model not found";
     }
+
 }

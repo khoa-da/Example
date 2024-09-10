@@ -9,7 +9,7 @@ import com.example.kalban_greenbag.exception.BaseException;
 import java.util.UUID;
 
 public interface ICategoryService extends IGenericService<CategoryResponse>{
-    CategoryResponse create(AddCategoryRequest addCategoryRequest, String token) throws BaseException;
+    CategoryResponse create(AddCategoryRequest addCategoryRequest) throws BaseException;
     CategoryResponse update(UpdateCategoryRequest updateCategoryRequest) throws BaseException;
     Boolean changeStatus(UUID categoryId) throws BaseException;
 }
