@@ -34,11 +34,8 @@ public class CategoryController {
 
     @Operation(summary = "Create category", description = "API create category")
     @PostMapping(value = ConstAPI.CategoryAPI.CREATE_CATEGORY)
-    public CategoryResponse createCategory(@Valid @RequestBody AddCategoryRequest addCategoryRequest,
-                                           HttpServletRequest request) throws BaseException {
-        String authorizationHeader = request.getHeader("Authorization");
-        String token = jwtService.extractBearerToken(authorizationHeader);
-        return categoryService.create(addCategoryRequest, token);
+    public CategoryResponse createCategory(@Valid @RequestBody AddCategoryRequest addCategoryRequest) throws BaseException {
+        return categoryService.create(addCategoryRequest);
     }
 
     @Operation(summary = "Update category", description = "API update category")

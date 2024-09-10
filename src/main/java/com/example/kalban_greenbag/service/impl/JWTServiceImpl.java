@@ -1,6 +1,8 @@
 package com.example.kalban_greenbag.service.impl;
 
+
 import com.example.kalban_greenbag.constant.ConstError;
+import com.example.kalban_greenbag.enums.ErrorCode;
 import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.service.IJWTService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,8 +21,16 @@ import java.util.function.Function;
 @Service
 public class JWTServiceImpl implements IJWTService {
     @Override
-    public String extractUserName(String token) {
-        return extractClaims(token, Claims::getSubject);
+    public String extractUserName(String token) throws BaseException {
+        try{
+            return extractClaims(token, Claims::getSubject);
+        }catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
     }
 
     @Override
@@ -33,9 +43,17 @@ public class JWTServiceImpl implements IJWTService {
     }
 
     @Override
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUserName(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public boolean isTokenValid(String token, UserDetails userDetails) throws BaseException {
+        try {
+            final String username = extractUserName(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+
     }
 
     @Override
@@ -55,7 +73,7 @@ public class JWTServiceImpl implements IJWTService {
         return Jwts.parserBuilder().setSigningKey(getSigninKey()).build().parseClaimsJws(token).getBody();
     }
 
-    private Key getSigninKey(){
+    public Key getSigninKey(){
         byte[] key = Decoders.BASE64.decode("QVNERjEyMzQ1Njc4OTBxd2VydHl1aW9wYXNkZmdoamtsenhjdmJubQ=="); // Secret key
         return Keys.hmacShaKeyFor(key);
     }

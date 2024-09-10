@@ -13,6 +13,8 @@ import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
 import com.example.kalban_greenbag.repository.CategoryRepository;
 import com.example.kalban_greenbag.service.ICategoryService;
+import com.example.kalban_greenbag.utils.SecurityUtil;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,14 +52,14 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public CategoryResponse create(AddCategoryRequest addCategoryRequest, String token) throws BaseException {
+    public CategoryResponse create(AddCategoryRequest addCategoryRequest) throws BaseException {
         try {
-            String userName =  jwtServiceImpl.extractUserName(token);
+            String username = SecurityUtil.getCurrentUsername();
             Category newCategory = new Category();
             newCategory.setCategoryName(addCategoryRequest.getCategoryName());
             newCategory.setDescription(addCategoryRequest.getDescription());
             newCategory.setStatus(addCategoryRequest.getStatus());
-            newCategory.setCreatedBy(jwtServiceImpl.extractUserName(userName));
+            newCategory.setCreatedBy(username);
             Category savedCategory = categoryRepository.save(newCategory);
 
             CategoryResponse savedCategoryResponse = modelMapper.map(savedCategory, CategoryResponse.class);
@@ -79,10 +82,12 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public CategoryResponse update(UpdateCategoryRequest updateCategoryRequest) throws BaseException {
         try {
+            String modifier = SecurityUtil.getCurrentUsername();
+
             Category category = categoryRepository.findById(updateCategoryRequest.getId())
-                    .orElseThrow(() -> new BaseException(ErrorCode.ERROR_500.getCode(),
+                    .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
                             ConstError.Category.CATEGORY_NOT_FOUND,
-                            ErrorCode.ERROR_500.getMessage()));
+                            ErrorCode.ERROR_404.getMessage()));
 
             if (updateCategoryRequest.getCategoryName() != null) {
                 category.setCategoryName(updateCategoryRequest.getCategoryName());
@@ -94,6 +99,7 @@ public class CategoryServiceImpl implements ICategoryService {
                 category.setStatus(updateCategoryRequest.getStatus());
             }
 
+            category.setModifiedBy(modifier);
             Category savedCategory = categoryRepository.save(category);
 
             String hashKeyForCategory = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + category.getId().toString();
@@ -117,6 +123,8 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public Boolean changeStatus(UUID categoryId) throws BaseException {
         try {
+            String modifier = SecurityUtil.getCurrentUsername();
+
             String hashKeyForCategory = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + categoryId.toString();
             CategoryResponse categoryResponseByRedis = (CategoryResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory);
 
@@ -132,6 +140,7 @@ public class CategoryServiceImpl implements ICategoryService {
                             ErrorCode.ERROR_404.getMessage()));
 
             category.setStatus(ConstStatus.INACTIVE_STATUS);
+            category.setModifiedBy(modifier);
             categoryRepository.save(category);
 
             CategoryResponse updatedCategoryResponse = modelMapper.map(category, CategoryResponse.class);
@@ -163,7 +172,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
             if (!isCategoryExist) {
                 logger.warn("Category with id {} not found", id);
-                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Category.CATEGORY_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+                throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Category.CATEGORY_NOT_FOUND, ErrorCode.ERROR_404.getMessage());
             }
 
             CategoryResponse categoryResponse = modelMapper.map(categoryById.get(), CategoryResponse.class);
