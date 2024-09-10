@@ -4,4 +4,6 @@ public class ConstHashKeyPrefix {
     public static final String HASH_KEY_PREFIX_FOR_CATEGORY = "Category:";
 
     public static final String HASH_KEY_PREFIX_FOR_BASE_MODEL = "BaseModel:";
+
+    public static final String HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION = "CustomizationOption:";
 }

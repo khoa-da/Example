@@ -47,4 +47,15 @@ public class ConstAPI {
 
     }
 
+    public static class CustomizationOptionAPI {
+
+        public static final String CREATE_CUSTOMIZATION_OPTION = "api/v1/customization-option/create";
+        public static final String UPDATE_CUSTOMIZATION_OPTION = "api/v1/customization-option/update";
+        public static final String DELETE_CUSTOMIZATION_OPTION = "api/v1/customization-option/delete/";
+        public static final String GET_CUSTOMIZATION_OPTION_BY_ID = "api/v1/customization-option/";
+        public static final String GET_ALL_CUSTOMIZATION_OPTION = "api/v1/customization-option";
+        public static final String GET_ALL_CUSTOMIZATION_OPTION_STATUS_TRUE = "api/v1/customization-option/customization-option-status-active";
+
+    }
+
 }
