@@ -47,15 +47,23 @@ public class ConstAPI {
 
     }
 
-    public static class CustomizationOptionAPI {
 
+    public static class ReviewAPI{
+        public static final String CREATE_REVIEW = "api/v1/review/create";
+        public static final String UPDATE_REVIEW = "api/v1/review/update";
+        public static final String DELETE_REVIEW = "api/v1/review/delete/";
+        public static final String GET_REVIEW_BY_ID = "api/v1/review/";
+        public static final String GET_ALL_REVIEWS = "api/v1/review";
+        public static final String GET_REVIEWS_BY_PRODUCT_ID = "api/v1/review/product/";
+        public static final String GET_ALL_REVIEWS_STATUS_ACTIVE = "api/v1/review/review-status-active";
+
+    public static class CustomizationOptionAPI {
         public static final String CREATE_CUSTOMIZATION_OPTION = "api/v1/customization-option/create";
         public static final String UPDATE_CUSTOMIZATION_OPTION = "api/v1/customization-option/update";
         public static final String DELETE_CUSTOMIZATION_OPTION = "api/v1/customization-option/delete/";
         public static final String GET_CUSTOMIZATION_OPTION_BY_ID = "api/v1/customization-option/";
         public static final String GET_ALL_CUSTOMIZATION_OPTION = "api/v1/customization-option";
         public static final String GET_ALL_CUSTOMIZATION_OPTION_STATUS_TRUE = "api/v1/customization-option/customization-option-status-active";
-
     }
 
 }
