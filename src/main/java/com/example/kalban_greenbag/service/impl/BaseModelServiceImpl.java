@@ -65,6 +65,7 @@ public class BaseModelServiceImpl implements IBaseModelService {
 
             newBaseModel.setCategory(category);
             newBaseModel.setCreatedBy(username);
+            newBaseModel.setStatus(addBaseModelRequest.getStatus());
             BaseModel savedBaseModel = baseModelRepository.save(newBaseModel);
             BaseModelResponse savedBaseModelResponse = modelMapper.map(savedBaseModel, BaseModelResponse.class);
 

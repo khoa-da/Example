@@ -1,5 +1,6 @@
 package com.example.kalban_greenbag.entity;
 
+import com.example.kalban_greenbag.constant.ConstStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -17,7 +18,6 @@ import java.util.Set;
 @Table(name = "Orders")
 public class Order extends BaseEntity{
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID")
     private User userID;
@@ -32,6 +32,9 @@ public class Order extends BaseEntity{
     @Lob
     @Column(name = "ShippingAddress")
     private String shippingAddress;
+
+    @Column(name = "OrderStatus")
+    private String orderStatus;
 
     @OneToMany(mappedBy = "orderID")
     private Set<OrderItem> orderItems = new LinkedHashSet<>();

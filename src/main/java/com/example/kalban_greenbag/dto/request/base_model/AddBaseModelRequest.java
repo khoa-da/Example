@@ -28,5 +28,9 @@ public class AddBaseModelRequest {
     private BigDecimal basePrice;
 
     @NotNull
+    @NotBlank(message = "Status cannot be blank")
+    private String status;
+
+    @NotNull
     private UUID categoryID;
 }

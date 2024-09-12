@@ -47,7 +47,6 @@ public class ConstAPI {
 
     }
 
-
     public static class ReviewAPI {
         public static final String CREATE_REVIEW = "api/v1/review/create";
         public static final String UPDATE_REVIEW = "api/v1/review/update";
@@ -57,6 +56,7 @@ public class ConstAPI {
         public static final String GET_REVIEWS_BY_PRODUCT_ID = "api/v1/review/product/";
         public static final String GET_ALL_REVIEWS_STATUS_ACTIVE = "api/v1/review/review-status-active";
     }
+
     public static class CustomizationOptionAPI {
         public static final String CREATE_CUSTOMIZATION_OPTION = "api/v1/customization-option/create";
         public static final String UPDATE_CUSTOMIZATION_OPTION = "api/v1/customization-option/update";
@@ -64,6 +64,24 @@ public class ConstAPI {
         public static final String GET_CUSTOMIZATION_OPTION_BY_ID = "api/v1/customization-option/";
         public static final String GET_ALL_CUSTOMIZATION_OPTION = "api/v1/customization-option";
         public static final String GET_ALL_CUSTOMIZATION_OPTION_STATUS_TRUE = "api/v1/customization-option/customization-option-status-active";
+    }
+
+    public static class OderItemAPI {
+        public static final String CREATE_ORDER_ITEM = "api/v1/order-item/create";
+        public static final String UPDATE_ORDER_ITEM = "api/v1/order-item/update";
+        public static final String DELETE_ORDER_ITEM = "api/v1/order-item/delete/";
+        public static final String GET_ORDER_ITEM_BY_ID = "api/v1/order-item/";
+        public static final String GET_ALL_ORDER_ITEMS = "api/v1/order-item";
+        public static final String GET_ALL_ORDER_ITEMS_STATUS_TRUE = "api/v1/order-item/order-item-status-active";
+    }
+
+    public static class OrderAPI {
+        public static final String CREATE_ORDER = "api/v1/order/create";
+        public static final String UPDATE_ORDER = "api/v1/order/update";
+        public static final String CHANGE_ORDER_STATUS = "api/v1/order/change-status/";
+        public static final String GET_ORDER_BY_ID = "api/v1/order/";
+        public static final String GET_ALL_ORDERS = "api/v1/order";
+        public static final String GET_ALL_ACTIVE_ORDERS = "api/v1/order/order-status-active";
     }
 
 }
