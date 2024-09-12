@@ -15,15 +15,12 @@ import java.util.Set;
 @Table(name = "Products")
 public class Product extends BaseEntity{
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BaseModelID")
     private BaseModel baseModelID;
 
     @Column(name = "FinalPrice", precision = 10, scale = 2)
     private BigDecimal finalPrice;
-
-
 
     @OneToMany(mappedBy = "productID")
     private Set<OrderItem> orderItems = new LinkedHashSet<>();

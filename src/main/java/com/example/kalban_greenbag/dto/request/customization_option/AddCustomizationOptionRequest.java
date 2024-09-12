@@ -28,6 +28,10 @@ public class AddCustomizationOptionRequest {
     private String optionType;
 
     @NotNull
+    @NotBlank(message = "Status cannot be blank")
+    private String status;
+
+    @NotNull
     @NotBlank(message = "Additional Price cannot be blank")
     @DecimalMin(value = "0.00", inclusive = false, message = "Additional price must be positive")
     private BigDecimal additionalPrice;

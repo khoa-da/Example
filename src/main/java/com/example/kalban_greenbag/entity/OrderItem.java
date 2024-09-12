@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @Table(name = "OrderItems")
 public class OrderItem extends BaseEntity{
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OrderID")
     private Order orderID;

@@ -57,6 +57,7 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
             newCustomization.setOptionName(addCustomizationOptionRequest.getOptionName());
             newCustomization.setOptionType(addCustomizationOptionRequest.getOptionType());
             newCustomization.setAdditionalPrice(addCustomizationOptionRequest.getAdditionalPrice());
+            newCustomization.setStatus(addCustomizationOptionRequest.getStatus());
 
             BaseModel baseModel = baseModelRepository.findById(addCustomizationOptionRequest.getBaseModelID())
                     .orElseThrow(() -> new BaseException(ErrorCode.ERROR_500.getCode(),
@@ -211,24 +212,18 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
 
             List<CustomizationOptionResponse> customizationOptionList;
 
-            // Check if the list of all customization options exists in Redis
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions)) {
                 customizationOptionList = (List<CustomizationOptionResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions);
             } else {
-                // Fetch from the database if not available in Redis
                 List<CustomizationOption> customizationOptions = customizationOptionRepository.findAllByOrderByCreatedDate(pageable);
                 customizationOptionList = customizationOptions.stream()
                         .map(option -> modelMapper.map(option, CustomizationOptionResponse.class))
                         .toList();
-
-                // Cache the result in Redis
                 redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions, customizationOptionList);
             }
 
             result.setListResult(customizationOptionList);
-
-            // Calculate the total pages for all customization options
-            long totalItems = customizationOptionRepository.count();  // This method counts all items in the table
+            long totalItems = customizationOptionRepository.count();
             result.setTotalPage((int) Math.ceil((double) totalItems / limit));
             result.setLimit(limit);
 
