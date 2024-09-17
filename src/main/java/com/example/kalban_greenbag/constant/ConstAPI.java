@@ -84,4 +84,21 @@ public class ConstAPI {
         public static final String GET_ALL_ACTIVE_ORDERS = "api/v1/order/order-status-active";
     }
 
+    public static class PAYosAPI {
+        //checkout
+        public static final String CHECKOUT = "api/v1/payment/create-payment-link";
+
+        //order
+        public static final String CREATE_ORDER = "api/v1/payment/create";
+        public static final String GET_ORDER_BY_ID = "api/v1/payment/";
+        public static final String CANCEL_ORDER = "api/v1/payment/cancel/";
+        public static final String CONFIRM_ORDER = "api/v1/payment/confirm-webhook";
+
+        //payment
+        public static final String PAYOS_TRANSFER_HANDLER = "api/v1/payment/payos_transfer_handler";
+
+        //handle payment status
+        public static final String HANDLE_PAYMENT_STATUS = "api/v1/payment/handle-payment-status/";
+    }
+
 }

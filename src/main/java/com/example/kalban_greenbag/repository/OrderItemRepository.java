@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
     List<OrderItem> findAllByOrderByCreatedDate(Pageable pageable);
     List<OrderItem> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
+    List<OrderItem> findByOrderID_Id(UUID orderId);
 }

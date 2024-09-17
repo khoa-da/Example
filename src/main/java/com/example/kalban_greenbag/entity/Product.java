@@ -22,6 +22,12 @@ public class Product extends BaseEntity{
     @Column(name = "FinalPrice", precision = 10, scale = 2)
     private BigDecimal finalPrice;
 
+    @Column(name = "ProductName", length = 100, unique = true)
+    private String productName;
+
+    @Column(name = "Stock")
+    private Integer stock;
+
     @OneToMany(mappedBy = "productID")
     private Set<OrderItem> orderItems = new LinkedHashSet<>();
 

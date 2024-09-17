@@ -17,6 +17,7 @@ import com.example.kalban_greenbag.repository.OrderRepository;
 import com.example.kalban_greenbag.repository.ProductRepository;
 import com.example.kalban_greenbag.repository.UserRepository;
 import com.example.kalban_greenbag.service.IOrderService;
+import com.example.kalban_greenbag.service.IProductService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
 import com.example.kalban_greenbag.utils.ValidateUtil;
 import org.modelmapper.ModelMapper;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,6 +43,9 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private IProductService productService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -198,7 +203,6 @@ public class OrderServiceImpl implements IOrderService {
             newOrder.setTotalAmount(addOrderRequest.getTotalAmount());
             newOrder.setShippingAddress(addOrderRequest.getShippingAddress());
             newOrder.setCreatedBy(username);
-
             Order savedOrder = orderRepository.save(newOrder);
 
             Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "*");

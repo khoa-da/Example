@@ -161,4 +161,19 @@ public class ProductServiceImpl implements IProductService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
+    @Override
+    public void reduceProductStock(UUID productId, Integer stock) throws BaseException {
+        try{
+            int rowsAffected = productRepository.reduceProductStockById(productId, stock);
+            if (rowsAffected == 0) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Product.PRODUCT_STOCK_NOT_ENOUGH, ErrorCode.ERROR_500.getMessage());
+            }
+        } catch (Exception exception) {
+            if (exception instanceof BaseException) {
+                throw exception;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
 }

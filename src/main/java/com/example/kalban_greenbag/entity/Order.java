@@ -36,7 +36,15 @@ public class Order extends BaseEntity{
     @Column(name = "OrderStatus")
     private String orderStatus;
 
+    @Column(name = "OrderCode", length = 10, unique = true)
+    private Long orderCode;
+
     @OneToMany(mappedBy = "orderID")
     private Set<OrderItem> orderItems = new LinkedHashSet<>();
+
+    @PrePersist
+    public void prePersist() {
+        this.orderStatus = ConstStatus.OrderStatus.ORDER_STATUS_PENDING;
+    }
 
 }
