@@ -1,6 +1,6 @@
 package com.example.kalban_greenbag.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import vn.payos.PayOS;
@@ -8,17 +8,18 @@ import vn.payos.PayOS;
 @Configuration
 public class PayOSConfig {
 
-    @Value("${payos.client.id}")
-    private String clientId;
+    private final Dotenv dotenv;
 
-    @Value("${payos.api.key}")
-    private String apiKey;
-
-    @Value("${payos.checksum.key}")
-    private String checksumKey;
+    public PayOSConfig() {
+        this.dotenv = Dotenv.load();
+    }
 
     @Bean
     public PayOS payOS() {
+        String clientId = dotenv.get("PAYOS_CLIENT_ID");
+        String apiKey = dotenv.get("PAYOS_API_KEY");
+        String checksumKey = dotenv.get("PAYOS_CHECKSUM_KEY");
+
         return new PayOS(clientId, apiKey, checksumKey);
     }
 }
