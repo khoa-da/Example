@@ -27,5 +27,6 @@ public class OrderResponse extends BaseResponse implements Serializable {
     private BigDecimal totalAmount;
     private String shippingAddress;
     private String orderStatus;
+    private String orderCode;
     private Set<OrderItemResponse> orderItems;
 }

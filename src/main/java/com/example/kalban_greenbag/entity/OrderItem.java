@@ -20,6 +20,9 @@ public class OrderItem extends BaseEntity{
     @JoinColumn(name = "ProductID")
     private Product productID;
 
+    @Column(name = "Name")
+    private String name;
+
     @Column(name = "Quantity")
     private Integer quantity;
 

@@ -20,7 +20,6 @@ import java.util.List;
 @Table(name = "Users")
 public class User extends BaseEntity implements UserDetails {
 
-
     @Size(max = 50)
     @NotNull
     @Nationalized
