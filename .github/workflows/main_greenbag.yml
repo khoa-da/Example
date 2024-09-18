@@ -12,19 +12,15 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'microsoft'
-
       - name: Build with Maven
         run: mvn clean install
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -45,13 +41,33 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_19B5D4A140D64EACABC39E554DFA6852 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_796205C48EFD4AFBBC3EB132F6F2E849 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D0269ED203B44E2B9B275F641CB74F9A }}
+
+      - name: Configure App Settings
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: 'GreenBag'
+          app-settings-json: |
+            [
+              {
+                "name": "PAYOS_API_KEY",
+                "value": "${{ secrets.PAYOS_API_KEY }}"
+              },
+              {
+                "name": "PAYOS_CHECKSUM_KEY",
+                "value": "${{ secrets.PAYOS_CHECKSUM_KEY }}"
+              },
+              {
+                "name": "PAYOS_CLIENT_ID",
+                "value": "${{ secrets.PAYOS_CLIENT_ID }}"
+              }
+            ]
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -60,4 +76,3 @@ jobs:
           app-name: 'GreenBag'
           slot-name: 'Production'
           package: '*.jar'
-          
