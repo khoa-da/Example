@@ -42,6 +42,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request.anyRequest().permitAll())
 //                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**",
 //                                "/api/v1/account/create",
@@ -63,51 +64,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     }
 
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable);
-//        http.authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**",
-//                                "/api/v1/account/create",
-//                                "/swagger-ui/**",
-//                                "/swagger-ui.html",
-//                                "swagger-resources/**",
-//                                "/v3/api-docs/**",
-//                                "webjars/**")
-//                        .permitAll()
-//                        .anyRequest().authenticated());
-//        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
-//        return http.build();
-//    }
-//    @Bean
-//    JwtDecoder jwtDecoder() {
-//        SecretKeySpec secretKeySpec = new SecretKeySpec(jwtService.getSigninKey().getEncoded(), "HmacSHA256");
-//        return NimbusJwtDecoder.withSecretKey(secretKeySpec).build();
-//    }
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.csrf(csrf -> csrf.disable())
-//                .exceptionHandling(handling -> handling
-//                        .accessDeniedHandler(globalExceptionHandler::handleAccessDeniedException)
-//                        .authenticationEntryPoint(globalExceptionHandler::handleAuthenticationException))
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(auth ->
-//                        auth.requestMatchers("/api/v1/auth/**",
-//                                "/api/v1/account/create",
-//                                "/swagger-ui/**",
-//                                "/swagger-ui.html",
-//                                "swagger-resources/**",
-//                                "/v3/api-docs/**",
-//                                "webjars/**").permitAll()
-//                                .anyRequest().authenticated()
-//                );
-//
-//        http.authenticationProvider(authenticationProvider);
-//
-//        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -116,5 +73,19 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD")
                 .allowedHeaders("*")
                 .exposedHeaders("X-Get-Header");
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://greenbag-e3bnc3hwc7exebep.eastus-01.azurewebsites.net"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
