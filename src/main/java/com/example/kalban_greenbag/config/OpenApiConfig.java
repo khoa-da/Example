@@ -1,7 +1,6 @@
 package com.example.kalban_greenbag.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -18,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.Arrays;
 
 @Configuration
 @OpenAPIDefinition(
@@ -39,7 +39,10 @@ public class OpenApiConfig {
         return new OpenAPI().info(new Info().title("Kabal Green Bag API")
                         .version("v1.0.0").description("Description")
                         .license(new License().name("API License").url("http://domain.vn/license")))
-                .servers(List.of(new Server().url("http://localhost:" + serverPort + "/").description("Kabal Green Bag API")))
+                .servers(List.of(
+                        new Server().url("http://localhost:" + serverPort + "/").description("Local Server"),
+                        new Server().url("https://greenbag-e3bnc3hwc7exebep.eastus-01.azurewebsites.net/").description("Azure Server")
+                ))
                 .components(new Components().addSecuritySchemes(
                         "bearerAuth",
                         new SecurityScheme()
@@ -47,5 +50,17 @@ public class OpenApiConfig {
                                 .scheme("bearer")
                                 .bearerFormat("JWT")))
                 .security(List.of(new SecurityRequirement().addList("bearerAuth")));
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOriginPatterns(Arrays.asList("*"));
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
