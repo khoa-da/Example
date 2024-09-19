@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @RestController
 @Slf4j
 @Tag(name = "Product Controller")

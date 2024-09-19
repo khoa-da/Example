@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @RestController
 @Slf4j
 @Tag(name = "MomoPayment Controller")
