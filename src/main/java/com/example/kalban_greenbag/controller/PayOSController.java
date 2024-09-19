@@ -27,7 +27,7 @@ import vn.payos.type.*;
 
 import java.util.*;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 @Slf4j
 @Tag(name = "PAYos Payment Controller")
