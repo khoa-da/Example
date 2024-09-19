@@ -10,7 +10,9 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
-//import org.springdoc.core.GroupedOpenApi;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,11 +49,18 @@ public class OpenApiConfig {
                 .security(List.of(new SecurityRequirement().addList("bearerAuth")));
     }
 
-//    @Bean
-//    public GroupedOpenApi groupedOpenApi() {
-//        return GroupedOpenApi.builder()
-//                .group("api-service")
-//                .packagesToScan("com.example.kalban_greenbag.controller")
-//                .build();
-//    }
+    // CORS Configuration
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*"); // Allow all origins, modify this based on your security needs
+        corsConfiguration.addAllowedHeader("*"); // Allow all headers
+        corsConfiguration.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+        corsConfiguration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration); // Apply CORS to all paths
+
+        return new CorsFilter(source);
+    }
 }
