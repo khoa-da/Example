@@ -36,8 +36,8 @@ public class UserController {
     }
 
     @Operation(summary = "Create account", description = "API create new account")
-    @PostMapping(value = ConstAPI.UserAPI.CREATE_ACCOUNT, consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
-    public JwtAuthenticationResponse create(@Valid @ModelAttribute CreateUserRequest createUserRequest) throws BaseException {
+    @PostMapping(value = ConstAPI.UserAPI.CREATE_ACCOUNT/*, consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE*/)
+    public JwtAuthenticationResponse create(@Valid @RequestBody CreateUserRequest createUserRequest) throws BaseException {
         log.info("Creating new account with request: {}", createUserRequest);
         return userService.create(createUserRequest);
     }
