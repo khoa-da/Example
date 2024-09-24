@@ -1,17 +1,19 @@
 package com.example.kalban_greenbag.config;
 
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.cache.annotation.EnableCaching;
+
+import java.time.Duration;
 
 @Configuration
 @EnableRedisRepositories
@@ -24,12 +26,27 @@ public class RedisConfig {
     @Value("${redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.password}")
+    private String redisPassword;
+
+    @Value("${spring.data.redis.ssl.enabled}")
+    private boolean redisSslEnabled;
+
     @Bean
     public JedisConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(redisHost);
         configuration.setPort(redisPort);
-        return new JedisConnectionFactory(configuration);
+        configuration.setPassword(redisPassword);  // Set password
+
+        // Set up Jedis client configuration with SSL
+        JedisClientConfiguration.JedisClientConfigurationBuilder jedisClientConfig = JedisClientConfiguration.builder();
+
+        if (redisSslEnabled) {
+            jedisClientConfig.useSsl().and().readTimeout(Duration.ofSeconds(60));  // Enable SSL and set timeout
+        }
+
+        return new JedisConnectionFactory(configuration, jedisClientConfig.build());
     }
 
     @Bean
@@ -45,6 +62,4 @@ public class RedisConfig {
         return template;
     }
 
-
 }
-
