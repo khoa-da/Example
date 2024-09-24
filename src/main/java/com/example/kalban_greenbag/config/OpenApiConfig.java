@@ -40,7 +40,7 @@ public class OpenApiConfig {
                         .version("v1.0.0").description("Description")
                         .license(new License().name("API License").url("http://domain.vn/license")))
                 .servers(List.of(
-                        new Server().url("http://localhost:" + serverPort + "/").description("Local Server"),
+                        //new Server().url("http://localhost:" + serverPort + "/").description("Local Server"),
                         new Server().url("https://greenbag-e3bnc3hwc7exebep.eastus-01.azurewebsites.net/").description("Azure Server")
                 ))
                 .components(new Components().addSecuritySchemes(
@@ -52,15 +52,5 @@ public class OpenApiConfig {
                 .security(List.of(new SecurityRequirement().addList("bearerAuth")));
     }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
+   
 }
