@@ -16,7 +16,6 @@ public class UpdateProductRequest{
     @NotNull(message = "ProductId is required")
     private UUID id;
     private String productName;
-    @Size(min = 1, max = 100000, message = "Stock must be between 1 and 100")
     private Integer stock;
     private BigDecimal finalPrice;
     private String status;
