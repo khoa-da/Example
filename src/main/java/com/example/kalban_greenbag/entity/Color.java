@@ -13,7 +13,6 @@ import org.hibernate.annotations.Nationalized;
 @Table(name = "Colors")
 public class Color extends BaseEntity{
 
-
     @Size(max = 30)
     @NotNull
     @Nationalized

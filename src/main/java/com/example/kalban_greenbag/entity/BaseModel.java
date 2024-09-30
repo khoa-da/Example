@@ -29,6 +29,9 @@ public class BaseModel extends BaseEntity{
     @Column(name = "Description")
     private String description;
 
+    @Column(name = "ImageURL")
+    private String imageURL;
+
     @Column(name = "BasePrice", precision = 10, scale = 2)
     private BigDecimal basePrice;
 
