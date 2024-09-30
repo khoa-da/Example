@@ -29,7 +29,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: target/*.jar
+          path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
     runs-on: windows-latest
@@ -38,14 +38,14 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write # OIDC token for Azure login
+      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: java-app
-
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -57,6 +57,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'KALBANv1'
+          app-name: 'GreenBag'
           slot-name: 'Production'
-          package: target/*.jar
+          package: '*.jar'
