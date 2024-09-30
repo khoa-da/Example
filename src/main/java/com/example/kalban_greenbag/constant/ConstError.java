@@ -54,4 +54,8 @@ public class ConstError {
         public static final String HANDLE_PAYMENT_FAILED = "Handle payment failed";
     }
 
+    public static class ProductCustomization {
+        public static final String PRODUCT_CUSTOMIZATION_NOT_FOUND = "Product customization not found";
+    }
+
 }

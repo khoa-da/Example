@@ -17,7 +17,6 @@ import java.util.Set;
 @Table(name = "Categories")
 public class Category extends BaseEntity{
 
-
     @Size(max = 50)
     @NotNull
     @Nationalized

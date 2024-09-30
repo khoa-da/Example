@@ -13,8 +13,12 @@ public class ConstAPI {
         public static final String GET_ALL_ACCOUNT = "api/v1/account";
         public static  final String GET_ALL_ACCOUNT_ACTIVE = "api/v1/account-active";
 
-
     }
+
+    public static class CacheAPI{
+        public static final String CLEAR_CACHE = "api/v1/cache/clear/";
+    }
+
     public static class ProductAPI {
         public static final String CREATE_PRODUCT = "api/v1/product/create";
         public static final String UPDATE_PRODUCT = "api/v1/product/update";
@@ -99,6 +103,16 @@ public class ConstAPI {
 
         //handle payment status
         public static final String HANDLE_PAYMENT_STATUS = "api/v1/payment/handle-payment-status/";
+    }
+
+    public static class ProductCustomizationAPI {
+        public static final String CREATE_PRODUCT_CUSTOMIZATION = "api/v1/product-customization/create";
+        public static final String UPDATE_PRODUCT_CUSTOMIZATION = "api/v1/product-customization/update";
+        public static final String DELETE_PRODUCT_CUSTOMIZATION = "api/v1/product-customization/delete/";
+        public static final String GET_PRODUCT_CUSTOMIZATION_BY_ID = "api/v1/product-customization/";
+        public static final String GET_ALL_PRODUCT_CUSTOMIZATIONS = "api/v1/product-customization";
+        public static final String GET_ACTIVE_PRODUCT_CUSTOMIZATIONS = "api/v1/product-customization/product-customization-status-active";
+
     }
 
 }

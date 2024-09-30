@@ -24,6 +24,9 @@ public class CustomizationOption extends BaseEntity{
     @Column(name = "OptionName", nullable = false, length = 50)
     private String optionName;
 
+    @Column(name = "ImageURL")
+    private String imageURL;
+
     @Size(max = 20)
     @NotNull
     @Nationalized

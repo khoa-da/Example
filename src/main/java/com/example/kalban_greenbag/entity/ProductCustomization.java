@@ -12,7 +12,6 @@ import org.hibernate.annotations.Nationalized;
 @Table(name = "ProductCustomizations")
 public class ProductCustomization extends BaseEntity{
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ProductID")
     private Product productID;
@@ -21,9 +20,11 @@ public class ProductCustomization extends BaseEntity{
     @JoinColumn(name = "OptionID")
     private CustomizationOption optionID;
 
+    @Column(name = "ImageURL")
+    private String imageURL;
+
     @Size(max = 100)
     @Nationalized
     @Column(name = "CustomValue", length = 100)
     private String customValue;
-
 }

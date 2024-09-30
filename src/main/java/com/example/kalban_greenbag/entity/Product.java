@@ -22,6 +22,9 @@ public class Product extends BaseEntity{
     @Column(name = "FinalPrice", precision = 10, scale = 2)
     private BigDecimal finalPrice;
 
+    @Column(name = "ImageURL")
+    private String imageURL;
+
     @Column(name = "ProductName", length = 100, unique = true)
     private String productName;
 
