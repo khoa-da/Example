@@ -10,6 +10,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class BaseModelResponse extends BaseResponse implements Serializable {
 
     private BigDecimal basePrice;
 
-//    private Category category;
+    private UUID categoryId;
 
     private Set<CustomizationOptionResponse> customizationOptions;
 

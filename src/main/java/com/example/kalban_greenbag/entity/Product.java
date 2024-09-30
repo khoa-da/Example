@@ -25,6 +25,12 @@ public class Product extends BaseEntity{
     @Column(name = "ProductName", length = 100, unique = true)
     private String productName;
 
+    @Column(name = "Desciption", length = 200)
+    private String desciption;
+
+    @Column(name = "Img")
+    private String img;
+
     @Column(name = "Stock")
     private Integer stock;
 
