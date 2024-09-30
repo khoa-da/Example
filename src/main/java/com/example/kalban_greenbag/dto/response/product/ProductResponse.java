@@ -16,6 +16,9 @@ import java.util.UUID;
 public class ProductResponse extends BaseResponse {
 
     private UUID baseModelID;
-
+    private String productName;
+    private Integer stock;
+    private String description;
+    private String img;
     private BigDecimal finalPrice;
 }

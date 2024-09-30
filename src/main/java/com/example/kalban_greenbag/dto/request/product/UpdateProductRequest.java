@@ -17,6 +17,8 @@ public class UpdateProductRequest{
     private UUID id;
     private String productName;
     private Integer stock;
+    private String description;
+    private String img;
     private BigDecimal finalPrice;
     private String status;
 }

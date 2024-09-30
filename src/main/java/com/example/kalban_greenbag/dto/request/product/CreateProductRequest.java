@@ -19,6 +19,8 @@ public class CreateProductRequest {
     private String productName;
     @NotNull(message = "Stock is required")
     private Integer stock;
+    private String description;
+    private String img;
     private BigDecimal finalPrice;
     private String status;
 
