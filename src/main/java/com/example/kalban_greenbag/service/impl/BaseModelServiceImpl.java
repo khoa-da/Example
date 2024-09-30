@@ -65,6 +65,7 @@ public class BaseModelServiceImpl implements IBaseModelService {
 
             newBaseModel.setCategory(category);
             newBaseModel.setCreatedBy(username);
+            newBaseModel.setImageURL(addBaseModelRequest.getImageURL());
             newBaseModel.setStatus(addBaseModelRequest.getStatus());
             BaseModel savedBaseModel = baseModelRepository.save(newBaseModel);
             BaseModelResponse savedBaseModelResponse = modelMapper.map(savedBaseModel, BaseModelResponse.class);
@@ -109,6 +110,9 @@ public class BaseModelServiceImpl implements IBaseModelService {
             }
             if (updateBaseModelRequest.getBasePrice() != null) {
                 baseModel.setBasePrice(updateBaseModelRequest.getBasePrice());
+            }
+            if (updateBaseModelRequest.getImageURL() != null) {
+                baseModel.setImageURL(updateBaseModelRequest.getImageURL());
             }
             if (updateBaseModelRequest.getCategoryID() != null) {
                 Category category = categoryRepository.findById(updateBaseModelRequest.getCategoryID())

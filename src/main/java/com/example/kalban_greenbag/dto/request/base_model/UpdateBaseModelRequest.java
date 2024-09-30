@@ -20,6 +20,8 @@ public class UpdateBaseModelRequest {
     @Nationalized
     private String modelName;
 
+    private String imageURL;
+
     @Nationalized
     @Size(max = 255, message = "Description cannot exceed 255 characters")
     private String description;
