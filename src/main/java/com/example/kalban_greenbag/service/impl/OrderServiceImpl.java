@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -199,7 +200,7 @@ public class OrderServiceImpl implements IOrderService {
             newOrder.setUserID(user);
             newOrder.setStatus(addOrderRequest.getStatus());
             newOrder.setOrderStatus(addOrderRequest.getOrderStatus());
-            newOrder.setOrderDate(addOrderRequest.getOrderDate());
+            newOrder.setOrderDate(Instant.now());
             newOrder.setTotalAmount(addOrderRequest.getTotalAmount());
             newOrder.setShippingAddress(addOrderRequest.getShippingAddress());
             newOrder.setCreatedBy(username);
