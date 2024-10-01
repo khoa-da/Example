@@ -17,9 +17,9 @@ public class AddOrderRequest {
     @NotNull(message = "UserID is required")
     private UUID userID;
 
-    @NotNull(message = "Order date is required")
-    @PastOrPresent(message = "Order date cannot be in the future")
-    private Instant orderDate;
+    // @NotNull(message = "Order date is required")
+    // @PastOrPresent(message = "Order date cannot be in the future")
+    // private Instant orderDate;
 
     @NotNull
     @NotBlank(message = "Status is required")
