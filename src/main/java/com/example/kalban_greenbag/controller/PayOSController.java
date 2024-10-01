@@ -42,22 +42,22 @@ public class PayOSController {
         return payOSService.createPaymentLink(RequestBody);
     }
 
-    @Operation(summary = "Get Order By Id", description = "Get Order By Id")
-    @GetMapping(value = ConstAPI.PAYosAPI.GET_ORDER_BY_ID + "{orderId}")
-    public ObjectNode getOrderById(@PathVariable("orderId") long orderId)  throws BaseException {
-          return payOSService.getOrderById(orderId);
+    @Operation(summary = "Get Order By Code", description = "Get Order By Code")
+    @GetMapping(value = ConstAPI.PAYosAPI.GET_ORDER_BY_ID + "{orderCode}")
+    public ObjectNode getOrderByCode(@PathVariable("orderCode") long orderCode)  throws BaseException {
+          return payOSService.getOrderById(orderCode);
     }
 
     @Operation(summary = "Handle payment status", description = "API Handle payment status")
     @GetMapping(value = ConstAPI.PAYosAPI.HANDLE_PAYMENT_STATUS + "{orderCode}")
-    public ObjectNode handlePayment(@PathVariable("orderCode") long orderId) throws BaseException {
-        return payOSService.handlePayment(orderId);
+    public ObjectNode handlePayment(@PathVariable("orderCode") long orderCode) throws BaseException {
+        return payOSService.handlePayment(orderCode);
     }
 
     @Operation(summary = "Cancel Order", description = "Cancel Order")
-    @PutMapping(value = ConstAPI.PAYosAPI.CANCEL_ORDER + "{orderId}")
-    public ObjectNode cancelOrder(@PathVariable("orderId") int orderId) throws BaseException{
-        return payOSService.cancelOrder(orderId);
+    @PutMapping(value = ConstAPI.PAYosAPI.CANCEL_ORDER + "{orderCode}")
+    public ObjectNode cancelOrder(@PathVariable("orderCode") int orderCode) throws BaseException{
+        return payOSService.cancelOrder(orderCode);
     }
 
     @Operation(summary = "Confirm Webhook", description = "Confirm Webhook")

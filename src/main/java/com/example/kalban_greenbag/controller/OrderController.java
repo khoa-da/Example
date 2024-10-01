@@ -64,4 +64,22 @@ public class OrderController {
             @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         return orderService.findAllByStatusTrue(page, limit);
     }
+
+    @Operation(summary = "Get all orders by user ID", description = "API get all orders by user ID with pagination")
+    @GetMapping(value = ConstAPI.OrderAPI.GET_ORDERS_BY_USER_ID + "{userId}")
+    public PagingModel<OrderResponse> getOrdersByUserId(
+            @PathVariable("userId") UUID userId,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        return orderService.getOrderByUserId(userId, page, limit);
+    }
+
+    @Operation(summary = "Get all orders by order code", description = "API get all orders by order code with pagination")
+    @GetMapping(value = ConstAPI.OrderAPI.GET_ORDER_BY_ORDER_CODE + "{orderCode}")
+    public PagingModel<OrderResponse> getOrdersByOrderCode(
+            @PathVariable("orderCode") long orderCode,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+        return orderService.getOrderByOrderCode(orderCode, page, limit);
+    }
 }

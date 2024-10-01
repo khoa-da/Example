@@ -316,4 +316,84 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    @Override
+    public PagingModel<OrderResponse> getOrderByOrderCode(long orderCode, Integer page, Integer limit) throws BaseException {
+        try {
+            if (page == null || page < 1) {
+                page = 1;
+            }
+            if (limit == null || limit < 1) {
+                limit = 10;
+            }
+
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            // Fetching the order by order code
+            Page<Order> orderPage = orderRepository.findByOrderCode(orderCode, pageable);
+
+            if (orderPage.isEmpty()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.Order.ORDER_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            List<OrderResponse> orderResponses = orderPage.stream()
+                    .map(order -> {
+                        OrderResponse response = modelMapper.map(order, OrderResponse.class);
+                        response.setUserId(order.getUserID().getId());
+                        return response;
+                    })
+                    .toList();
+
+            PagingModel<OrderResponse> result = new PagingModel<>();
+            result.setListResult(orderResponses);
+            result.setPage(page);
+            result.setTotalPage(orderPage.getTotalPages());
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception exception) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+
+    @Override
+    public PagingModel<OrderResponse> getOrderByUserId(UUID userId, Integer page, Integer limit) throws BaseException {
+        try {
+            if (page == null || page < 1) {
+                page = 1;
+            }
+            if (limit == null || limit < 1) {
+                limit = 10;
+            }
+
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            // Fetching the orders by user ID
+            Page<Order> orderPage = orderRepository.findAllByUserId(userId, pageable);
+
+            if (orderPage.isEmpty()) {
+                throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Order.ORDER_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+
+            List<OrderResponse> orderResponses = orderPage.stream()
+                    .map(order -> {
+                        OrderResponse response = modelMapper.map(order, OrderResponse.class);
+                        response.setUserId(order.getUserID().getId());
+                        return response;
+                    })
+                    .toList();
+
+            PagingModel<OrderResponse> result = new PagingModel<>();
+            result.setListResult(orderResponses);
+            result.setPage(page);
+            result.setTotalPage(orderPage.getTotalPages());
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception exception) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+
 }

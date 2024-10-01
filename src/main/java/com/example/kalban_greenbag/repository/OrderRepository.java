@@ -2,6 +2,7 @@ package com.example.kalban_greenbag.repository;
 
 import com.example.kalban_greenbag.entity.Order;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,6 +19,11 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     List<Order> findAllByOrderByCreatedDate(Pageable pageable);
     List<Order> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
+    Page<Order> findByOrderCode(long orderCode, Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE o.userID.id = :userId")
+    Page<Order> findAllByUserId(@Param("userId") UUID userId, Pageable pageable);
+
     Order findByOrderCode(long orderCode);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
