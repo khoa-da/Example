@@ -21,7 +21,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class OrderResponse extends BaseResponse implements Serializable {
-    private UUID orderId;
     private UUID userId;
     private Instant orderDate;
     private BigDecimal totalAmount;

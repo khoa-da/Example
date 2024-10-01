@@ -86,6 +86,8 @@ public class ConstAPI {
         public static final String GET_ORDER_BY_ID = "api/v1/order/";
         public static final String GET_ALL_ORDERS = "api/v1/order";
         public static final String GET_ALL_ACTIVE_ORDERS = "api/v1/order/order-status-active";
+        public static final String GET_ORDERS_BY_USER_ID = "api/v1/order/user/";
+        public static final String GET_ORDER_BY_ORDER_CODE = "api/v1/order/order-code/";
     }
 
     public static class PAYosAPI {
