@@ -137,6 +137,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             newProductCustomization.setCreatedBy(SecurityUtil.getCurrentUsername());
             newProductCustomization.setProductID(product);
             newProductCustomization.setOptionID(customizationOption);
+            newProductCustomization.setUserId(addProductCustomizationRequest.getUserId());
 
             ProductCustomization savedProductCustomization = productCustomizationRepository.save(newProductCustomization);
 
@@ -201,6 +202,32 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             if (exception instanceof BaseException) {
                 throw exception;
             }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public PagingModel<ProductCustomizationResponse> getProductCustomByUserId(UUID userId, Integer page, Integer limit) throws BaseException {
+        try {
+            if (page == null || limit == null) {
+                page = 1;
+                limit = 10;
+            }
+            PagingModel<ProductCustomizationResponse> result = new PagingModel<>();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByUserIdOrderByCreatedDate(userId, pageable);
+            List<ProductCustomizationResponse> productCustomizationResponses = productCustomizationList.stream()
+                    .map(productCustomization -> modelMapper.map(productCustomization, ProductCustomizationResponse.class))
+                    .toList();
+
+            result.setListResult(productCustomizationResponses);
+            result.setTotalPage((int) Math.ceil((double) totalActiveItems() / limit));
+            result.setLimit(limit);
+
+            return result;
+        } catch (Exception exception) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

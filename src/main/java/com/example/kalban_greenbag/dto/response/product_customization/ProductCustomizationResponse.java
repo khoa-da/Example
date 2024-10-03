@@ -25,4 +25,6 @@ public class ProductCustomizationResponse extends BaseResponse{
     private UUID optionID;
     private String imageURL;
     private String customValue;
+    private UUID userId;
+
 }

@@ -13,5 +13,6 @@ import java.util.UUID;
 public interface ProductCustomizationRepository extends JpaRepository<ProductCustomization, UUID>{
     List<ProductCustomization> findAllByOrderByCreatedDate(Pageable pageable);
     List<ProductCustomization> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
+    List<ProductCustomization> findAllByUserIdOrderByCreatedDate(UUID userId, Pageable pageable);
     int countByStatus(String status);
 }

@@ -17,4 +17,5 @@ public class AddProductCustomizationRequest {
     private String imageURL;
     private String customValue;
     private String status;
+    private UUID userId;
 }

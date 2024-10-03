@@ -69,4 +69,15 @@ public class ProductCustomizationController {
         log.info("Fetching all active product customizations with page: {}, limit: {}", page, limit);
         return productCustomizationService.findAllByStatusTrue(page, limit);
     }
+
+    @Operation(summary = "Get all active product customizations by userid", description = "API to get all active product customizations")
+    @GetMapping(value = "api/v1/product-customization/user/{userId}")
+    public PagingModel<ProductCustomizationResponse> getCustomizationsByUserId(
+            @PathVariable("userId") UUID userId,  // Use @PathVariable to bind the userId from the path
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
+
+        return productCustomizationService.getProductCustomByUserId(userId, page, limit);
+    }
+
 }
