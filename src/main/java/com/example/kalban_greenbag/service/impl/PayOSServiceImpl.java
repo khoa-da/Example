@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.modelmapper.ModelMapper;
+import org.springdoc.api.ErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.payos.PayOS;
@@ -116,6 +117,7 @@ public class PayOSServiceImpl implements IPayOSService {
             }
     }
 
+
     @Override
     public ObjectNode handlePayment(long orderId) throws BaseException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -123,30 +125,35 @@ public class PayOSServiceImpl implements IPayOSService {
         try {
             PaymentLinkData order = payOS.getPaymentLinkInformation(orderId);
             Order orderToUpdate = orderRepository.findByOrderCode(orderId);
-            if(order.getStatus().equals(ConstStatus.PayOsStatus.PAYOS_STATUS_PAID)) {
+
+            if (order.getStatus().equals(ConstStatus.PayOsStatus.PAYOS_STATUS_PAID)) {
                 orderToUpdate.setOrderStatus(ConstStatus.OrderStatus.ORDER_STATUS_PAID);
                 for (OrderItem orderItem : orderToUpdate.getOrderItems()) {
-                    productService.reduceProductStock(orderItem.getProductID().getId(), orderItem.getQuantity());
+                    checkAndReduceProductStock(orderItem);
                 }
-            } else if(order.getStatus().equals(ConstStatus.PayOsStatus.PAYOS_STATUS_CANCELLED)) {
+            } else if (order.getStatus().equals(ConstStatus.PayOsStatus.PAYOS_STATUS_CANCELLED)) {
                 orderToUpdate.setOrderStatus(ConstStatus.OrderStatus.ORDER_STATUS_CANCELLED);
             } else {
                 orderToUpdate.setOrderStatus(ConstStatus.OrderStatus.ORDER_STATUS_PENDING);
             }
+
             orderRepository.save(orderToUpdate);
             response.set("data", objectMapper.valueToTree(order));
             response.put("error", 0);
             response.put("message", "ok");
             return response;
+
+        } catch (BaseException e) {
+            throw e;
         } catch (Exception e) {
             throw new BaseException(
                     ErrorCode.ERROR_500.getCode(),
                     ConstError.PayOS.HANDLE_PAYMENT_FAILED,
-                    ErrorCode.ERROR_500.getMessage()
+                    e.getMessage()
             );
         }
-
     }
+
 
     @Override
     public ObjectNode cancelOrder(int orderId) throws BaseException {
@@ -211,6 +218,18 @@ public class PayOSServiceImpl implements IPayOSService {
                     ErrorCode.ERROR_500.getCode(),
                     ConstError.PayOS.WEBHOOK_PROCESS_FAILED,
                     "Failed to process Webhook: " + e.getMessage()
+            );
+        }
+    }
+
+    private void checkAndReduceProductStock(OrderItem orderItem) throws BaseException {
+        boolean success = productService.reduceProductStock(orderItem.getProductID().getId(), orderItem.getQuantity());
+
+        if (!success) {
+            throw new BaseException(
+                    ErrorCode.ERROR_500.getCode(),
+                    ConstError.Product.PRODUCT_STOCK_NOT_ENOUGH,
+                    ErrorCode.ERROR_500.getMessage()
             );
         }
     }

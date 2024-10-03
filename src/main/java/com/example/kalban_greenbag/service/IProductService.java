@@ -14,5 +14,5 @@ public interface IProductService extends IGenericService<ProductResponse>{
     ProductResponse create(CreateProductRequest createProductRequest) throws BaseException;
     ProductResponse update(UpdateProductRequest updateProductRequest) throws BaseException;
     Boolean changeStatus(UUID productId) throws BaseException;
-    void reduceProductStock(UUID productId, Integer stock) throws BaseException;
+    boolean reduceProductStock(UUID productId, Integer stock) throws BaseException;
 }
