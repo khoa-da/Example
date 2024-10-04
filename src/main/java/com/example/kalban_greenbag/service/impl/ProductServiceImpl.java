@@ -132,6 +132,7 @@ public class ProductServiceImpl implements IProductService {
                             ErrorCode.ERROR_404.getMessage()));
 
             modelMapper.map(updateProductRequest, product);
+            product.setDesciption(updateProductRequest.getDescription());
             Product updatedProduct = productRepository.save(product);
             return modelMapper.map(updatedProduct, ProductResponse.class);
         } catch (Exception exception) {
