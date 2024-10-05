@@ -28,8 +28,7 @@ public class ProductCustomization extends BaseEntity{
     @Column(name = "UserId")
     private UUID userId;
 
-    @Size(max = 100)
     @Nationalized
-    @Column(name = "CustomValue", length = 100)
+    @Column(name = "CustomValue", columnDefinition = "NVARCHAR(MAX)")  // Sử dụng NVARCHAR(MAX) cho các DB hỗ trợ
     private String customValue;
 }
