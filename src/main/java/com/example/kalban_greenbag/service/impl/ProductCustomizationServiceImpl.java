@@ -138,7 +138,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             newProductCustomization.setProductID(product);
             newProductCustomization.setOptionID(customizationOption);
             newProductCustomization.setUserId(addProductCustomizationRequest.getUserId());
-
+            newProductCustomization.setCustomValue(addProductCustomizationRequest.getCustomValue());
             ProductCustomization savedProductCustomization = productCustomizationRepository.save(newProductCustomization);
 
             return modelMapper.map(savedProductCustomization, ProductCustomizationResponse.class);
@@ -152,15 +152,28 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
     @Override
     public ProductCustomizationResponse update(UpdateProductCustomizationRequest updateProductCustomizationRequest) throws BaseException {
         try {
+            // Tìm ProductCustomization dựa trên ID từ request
             ProductCustomization productCustomization = productCustomizationRepository.findById(updateProductCustomizationRequest.getId())
                     .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
                             ConstError.ProductCustomization.PRODUCT_CUSTOMIZATION_NOT_FOUND,
                             ErrorCode.ERROR_404.getMessage()));
 
-            productCustomization.setStatus(updateProductCustomizationRequest.getStatus());
-            productCustomization.setImageURL(updateProductCustomizationRequest.getImageURL());
-            productCustomization.setModifiedBy(SecurityUtil.getCurrentUsername());
+            // Cập nhật status (nếu có)
+            if (updateProductCustomizationRequest.getStatus() != null) {
+                productCustomization.setStatus(updateProductCustomizationRequest.getStatus());
+            }
 
+            // Cập nhật imageURL (nếu có)
+            if (updateProductCustomizationRequest.getImageURL() != null) {
+                productCustomization.setImageURL(updateProductCustomizationRequest.getImageURL());
+            }
+
+            // Cập nhật customValue (nếu có)
+            if (updateProductCustomizationRequest.getCustomValue() != null) {
+                productCustomization.setCustomValue(updateProductCustomizationRequest.getCustomValue());
+            }
+
+            // Cập nhật productId (nếu có)
             if (updateProductCustomizationRequest.getProductId() != null) {
                 Product product = productRepository.findById(updateProductCustomizationRequest.getProductId())
                         .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
@@ -169,6 +182,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
                 productCustomization.setProductID(product); // Use setProduct instead of setProductID
             }
 
+            // Cập nhật optionId (nếu có)
             if (updateProductCustomizationRequest.getOptionId() != null) {
                 CustomizationOption customizationOption = customizationOptionRepository.findById(updateProductCustomizationRequest.getOptionId())
                         .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
@@ -176,8 +190,16 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
                                 "The option with the provided ID does not exist."));
                 productCustomization.setOptionID(customizationOption); // Use setOption instead of setOptionID
             }
+
+            // Cập nhật thông tin người sửa đổi
+            productCustomization.setModifiedBy(SecurityUtil.getCurrentUsername());
+
+            // Lưu lại ProductCustomization đã được cập nhật
             ProductCustomization updatedProductCustomization = productCustomizationRepository.save(productCustomization);
+
+            // Trả về response đã được map từ entity
             return modelMapper.map(updatedProductCustomization, ProductCustomizationResponse.class);
+
         } catch (Exception exception) {
             if (exception instanceof BaseException) {
                 throw exception;
@@ -185,6 +207,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
 
     @Override
     public Boolean changeStatus(UUID id) throws BaseException {
