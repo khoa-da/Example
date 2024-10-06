@@ -8,6 +8,7 @@ import com.example.kalban_greenbag.dto.request.order_item.UpdateOrderItemRequest
 import com.example.kalban_greenbag.dto.response.base_model.BaseModelResponse;
 import com.example.kalban_greenbag.dto.response.customization_option.CustomizationOptionResponse;
 import com.example.kalban_greenbag.dto.response.order_item.OrderItemResponse;
+import com.example.kalban_greenbag.dto.response.product.ProductResponse;
 import com.example.kalban_greenbag.entity.*;
 import com.example.kalban_greenbag.enums.ErrorCode;
 import com.example.kalban_greenbag.exception.BaseException;
@@ -105,28 +106,21 @@ public class OrderItemServiceImpl implements IOrderItemService {
 
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForAllOrderItems = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "all:" + page + ":" + limit;
-
-            List<OrderItemResponse> orderItemResponseList;
-
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, hashKeyForAllOrderItems)) {
-                orderItemResponseList = (List<OrderItemResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, hashKeyForAllOrderItems);
-            } else {
-                List<OrderItem> orderItems = orderItemRepository.findAllByOrderByCreatedDate(pageable);
-                orderItemResponseList = orderItems.stream()
-                        .map(orderItem -> {
-                            OrderItemResponse response = modelMapper.map(orderItem, OrderItemResponse.class);
-                            response.setProductID(orderItem.getProductID().getId());
-                            response.setOrderID(orderItem.getOrderID().getId());
-                            return response;
-                        })
-                        .toList();
-
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, hashKeyForAllOrderItems, orderItemResponseList);
-            }
+            // Fetch Order Items and map to response objects
+            List<OrderItem> orderItems = orderItemRepository.findAllByOrderByCreatedDate(pageable);
+            List<OrderItemResponse> orderItemResponseList = orderItems.stream()
+                    .map(orderItem -> {
+                        OrderItemResponse response = modelMapper.map(orderItem, OrderItemResponse.class);
+                        ProductResponse productResponse = modelMapper.map(orderItem.getProductID(), ProductResponse.class);
+                        response.setProduct(productResponse);
+                        response.setOrderID(orderItem.getOrderID().getId());
+                        return response;
+                    })
+                    .toList();
 
             result.setListResult(orderItemResponseList);
 
+            // Set pagination data
             long totalItems = orderItemRepository.count();
             result.setTotalPage((int) Math.ceil((double) totalItems / limit));
             result.setLimit(limit);
@@ -136,6 +130,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
 
 
     @Override
@@ -153,28 +148,21 @@ public class OrderItemServiceImpl implements IOrderItemService {
 
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForActiveOrderItems = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "all:active:" + page + ":" + limit;
-
-            List<OrderItemResponse> orderItemResponseList;
-
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, hashKeyForActiveOrderItems)) {
-                orderItemResponseList = (List<OrderItemResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, hashKeyForActiveOrderItems);
-            } else {
-                List<OrderItem> orderItems = orderItemRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS,pageable);
-                orderItemResponseList = orderItems.stream()
-                        .map(orderItem -> {
-                            OrderItemResponse response = modelMapper.map(orderItem, OrderItemResponse.class);
-                            response.setProductID(orderItem.getProductID().getId());
-                            response.setOrderID(orderItem.getOrderID().getId());
-                            return response;
-                        })
-                        .toList();
-
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, hashKeyForActiveOrderItems, orderItemResponseList);
-            }
+            // Fetch Order Items with active status and map to response objects
+            List<OrderItem> orderItems = orderItemRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+            List<OrderItemResponse> orderItemResponseList = orderItems.stream()
+                    .map(orderItem -> {
+                        OrderItemResponse response = modelMapper.map(orderItem, OrderItemResponse.class);
+                        ProductResponse productResponse = modelMapper.map(orderItem.getProductID(), ProductResponse.class);
+                        response.setProduct(productResponse);
+                        response.setOrderID(orderItem.getOrderID().getId());
+                        return response;
+                    })
+                    .toList();
 
             result.setListResult(orderItemResponseList);
 
+            // Set pagination data
             result.setTotalPage((int) Math.ceil((double) totalItem() / limit));
             result.setLimit(limit);
 
@@ -183,6 +171,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
 
 
     @Override

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -31,4 +32,7 @@ public class ProductCustomization extends BaseEntity{
     @Nationalized
     @Column(name = "CustomValue", columnDefinition = "NVARCHAR(MAX)")  // Sử dụng NVARCHAR(MAX) cho các DB hỗ trợ
     private String customValue;
+
+    @Column(name = "TotalPrice", precision = 10, scale = 2)
+    private BigDecimal totalPrice;
 }

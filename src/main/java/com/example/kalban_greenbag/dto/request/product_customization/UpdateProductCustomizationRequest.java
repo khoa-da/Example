@@ -2,6 +2,7 @@ package com.example.kalban_greenbag.dto.request.product_customization;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -16,4 +17,5 @@ public class UpdateProductCustomizationRequest {
     private String imageURL;
     private String status;
     private String customValue;
+    private BigDecimal totalPrice;
 }
