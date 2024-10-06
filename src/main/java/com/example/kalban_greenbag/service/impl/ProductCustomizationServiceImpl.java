@@ -69,7 +69,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAll(pageable).getContent();
+            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByOrderByCreatedDate(pageable);
             List<ProductCustomizationResponse> productCustomizationResponses = productCustomizationList.stream()
                     .map(productCustomization -> modelMapper.map(productCustomization, ProductCustomizationResponse.class))
                     .toList();
@@ -123,12 +123,12 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
         try {
             Product product = productRepository.findById(addProductCustomizationRequest.getProductId())
                     .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
-                            "Product not found",
+                            ConstError.ProductCustomization.PRODUCT_CUSTOMIZATION_NOT_FOUND,
                             "The product with the provided ID does not exist."));
 
             CustomizationOption customizationOption = customizationOptionRepository.findById(addProductCustomizationRequest.getOptionId())
                     .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
-                            "Customization Option not found",
+                            ConstError.CustomizationOption.CUSTOMIZATION_OPTION_NOT_FOUND,
                             "The option with the provided ID does not exist."));
 
             ProductCustomization newProductCustomization = new ProductCustomization();
@@ -139,6 +139,9 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             newProductCustomization.setOptionID(customizationOption);
             newProductCustomization.setUserId(addProductCustomizationRequest.getUserId());
             newProductCustomization.setCustomValue(addProductCustomizationRequest.getCustomValue());
+            newProductCustomization.setTotalPrice(
+                    addProductCustomizationRequest.getTotalPrice().add(product.getFinalPrice())
+            );
             ProductCustomization savedProductCustomization = productCustomizationRepository.save(newProductCustomization);
 
             return modelMapper.map(savedProductCustomization, ProductCustomizationResponse.class);
@@ -146,8 +149,6 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
-
-
 
     @Override
     public ProductCustomizationResponse update(UpdateProductCustomizationRequest updateProductCustomizationRequest) throws BaseException {
@@ -171,6 +172,11 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             // Cập nhật customValue (nếu có)
             if (updateProductCustomizationRequest.getCustomValue() != null) {
                 productCustomization.setCustomValue(updateProductCustomizationRequest.getCustomValue());
+            }
+
+            // Cập nhật price (nếu có)
+            if (updateProductCustomizationRequest.getTotalPrice() != null) {
+                productCustomization.setTotalPrice(updateProductCustomizationRequest.getTotalPrice());
             }
 
             // Cập nhật productId (nếu có)
