@@ -115,7 +115,7 @@ public class ProductServiceImpl implements IProductService {
     public ProductResponse create(CreateProductRequest createProductRequest) throws BaseException {
         try {
             Product newProduct = modelMapper.map(createProductRequest, Product.class);
-            newProduct.setStatus(ConstStatus.ACTIVE_STATUS);
+            newProduct.setStatus(createProductRequest.getStatus());
             Product savedProduct = productRepository.save(newProduct);
             return modelMapper.map(savedProduct, ProductResponse.class);
         } catch (Exception exception) {
