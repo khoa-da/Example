@@ -33,6 +33,9 @@ public class Order extends BaseEntity{
     @Column(name = "ShippingAddress")
     private String shippingAddress;
 
+    @Column(name= "Reason")
+    private String reason;
+
     @Column(name = "OrderStatus")
     private String orderStatus;
 

@@ -113,7 +113,7 @@ public class OrderServiceImpl implements IOrderService {
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, cacheKey)) {
                 orderResponseList = (List<OrderResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, cacheKey);
             } else {
-                Page<Order> ordersPage = orderRepository.findAll(pageable);
+                Page<Order> ordersPage = orderRepository.findAllByOrderByCreatedDate(pageable);
                 orderResponseList = ordersPage.stream()
                         .map(order -> modelMapper.map(order, OrderResponse.class))
                         .toList();
@@ -201,6 +201,7 @@ public class OrderServiceImpl implements IOrderService {
             newOrder.setStatus(addOrderRequest.getStatus());
             newOrder.setOrderStatus(addOrderRequest.getOrderStatus());
             newOrder.setOrderDate(Instant.now());
+            newOrder.setReason(addOrderRequest.getReason());
             newOrder.setTotalAmount(addOrderRequest.getTotalAmount());
             newOrder.setShippingAddress(addOrderRequest.getShippingAddress());
             newOrder.setCreatedBy(username);
@@ -248,6 +249,9 @@ public class OrderServiceImpl implements IOrderService {
             }
             if (updateOrderRequest.getStatus() != null) {
                 order.setStatus(updateOrderRequest.getStatus());
+            }
+            if (updateOrderRequest.getReason() != null) {
+                order.setStatus(updateOrderRequest.getReason());
             }
             order.setModifiedBy(SecurityUtil.getCurrentUsername());
 

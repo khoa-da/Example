@@ -17,11 +17,11 @@ import java.util.UUID;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
 
-    List<Order> findAllByOrderByCreatedDate(Pageable pageable);
+    Page<Order> findAllByOrderByCreatedDate(Pageable pageable);
     List<Order> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
     Page<Order> findByOrderCode(long orderCode, Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE o.userID.id = :userId")
+    @Query("SELECT o FROM Order o WHERE o.userID.id = :userId ORDER BY o.createdDate DESC")
     Page<Order> findAllByUserId(@Param("userId") UUID userId, Pageable pageable);
 
     Order findByOrderCode(long orderCode);
