@@ -17,11 +17,9 @@ public class SecurityUtil {
             if (principal instanceof UserDetails) {
                 return ((UserDetails) principal).getUsername();
             } else {
-                return principal.toString();
+                return "";
             }
         }
         throw new RuntimeException(ConstError.User.USER_NOT_AUTHENTICATED);
     }
-
-
 }

@@ -29,6 +29,8 @@ public class AddOrderRequest {
     @DecimalMin(value = "0.0", inclusive = true, message = "Total amount must be greater than or equal to zero")
     private BigDecimal totalAmount;
 
+    private String reason;
+
     @NotNull
     @NotBlank(message = "Order status is required")
     private String orderStatus;

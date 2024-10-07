@@ -25,6 +25,8 @@ public class UpdateOrderRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "Total amount must be greater than zero")
     private BigDecimal totalAmount;
 
+    private String reason;
+
     private String orderStatus;
 
     @Size(max = 255, message = "Shipping address cannot exceed 255 characters")
