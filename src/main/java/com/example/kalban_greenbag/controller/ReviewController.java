@@ -56,13 +56,13 @@ public class ReviewController {
     }
 
     @Operation(summary = "Change review status", description = "API to change the status of a review (active/inactive)")
-    @PatchMapping(value = ConstAPI.ReviewAPI.DELETE_REVIEW + "/{id}")
+    @PatchMapping(value = ConstAPI.ReviewAPI.DELETE_REVIEW + "{id}")
     public Boolean changeStatus(@PathVariable UUID id) throws BaseException {
         return reviewService.changeStatus(id);
     }
 
     @Operation(summary = "Get reviews by product ID", description = "API to get a paginated list of reviews by product ID")
-    @GetMapping(value = ConstAPI.ReviewAPI.GET_REVIEWS_BY_PRODUCT_ID + "/{productId}")
+    @GetMapping(value = ConstAPI.ReviewAPI.GET_REVIEWS_BY_PRODUCT_ID + "{productId}")
     public PagingModel<ReviewResponse> getAllByProductId(@PathVariable UUID productId,
                                                   @RequestParam(value = "page", required = false) Integer page,
                                                   @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
