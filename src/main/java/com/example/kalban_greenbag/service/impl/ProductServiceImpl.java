@@ -116,8 +116,11 @@ public class ProductServiceImpl implements IProductService {
         try {
             Product newProduct = modelMapper.map(createProductRequest, Product.class);
             newProduct.setStatus(createProductRequest.getStatus());
+            newProduct.setDesciption(createProductRequest.getDescription());
             Product savedProduct = productRepository.save(newProduct);
-            return modelMapper.map(savedProduct, ProductResponse.class);
+            ProductResponse productResponse = modelMapper.map(savedProduct, ProductResponse.class);
+            productResponse.setDescription(newProduct.getDesciption());
+            return productResponse;
         } catch (Exception exception) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
@@ -134,7 +137,10 @@ public class ProductServiceImpl implements IProductService {
             modelMapper.map(updateProductRequest, product);
             product.setDesciption(updateProductRequest.getDescription());
             Product updatedProduct = productRepository.save(product);
-            return modelMapper.map(updatedProduct, ProductResponse.class);
+            ProductResponse productResponse = modelMapper.map(updatedProduct, ProductResponse.class);
+            productResponse.setDescription(product.getDesciption());
+            return productResponse;
+
         } catch (Exception exception) {
             if (exception instanceof BaseException) {
                 throw exception;
