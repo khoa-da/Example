@@ -15,4 +15,5 @@ public interface ProductCustomizationRepository extends JpaRepository<ProductCus
     List<ProductCustomization> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
     List<ProductCustomization> findAllByUserIdOrderByCreatedDate(UUID userId, Pageable pageable);
     int countByStatus(String status);
+    int countByUserId(UUID id);
 }
