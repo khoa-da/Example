@@ -256,7 +256,9 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
                     .toList();
 
             result.setListResult(productCustomizationResponses);
-            result.setTotalPage((int) Math.ceil((double) totalActiveItems() / limit));
+
+            long totalItems = productCustomizationRepository.countByUserId(userId);
+            result.setTotalPage((int) Math.ceil((double) totalItems / limit));
             result.setLimit(limit);
 
             return result;
