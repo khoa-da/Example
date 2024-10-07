@@ -11,6 +11,7 @@ import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
 import com.example.kalban_greenbag.repository.ProductRepository;
 import com.example.kalban_greenbag.service.IProductService;
+import com.example.kalban_greenbag.utils.SecurityUtil;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,14 +130,43 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ProductResponse update(UpdateProductRequest updateProductRequest) throws BaseException {
         try {
+            // Find the existing product
             Product product = productRepository.findById(updateProductRequest.getId())
                     .orElseThrow(() -> new BaseException(ErrorCode.ERROR_404.getCode(),
                             ConstError.Product.PRODUCT_NOT_FOUND,
                             ErrorCode.ERROR_404.getMessage()));
 
-            modelMapper.map(updateProductRequest, product);
-            product.setDesciption(updateProductRequest.getDescription());
+            // Update fields only if they are provided in the request
+            if (updateProductRequest.getProductName() != null) {
+                product.setProductName(updateProductRequest.getProductName());
+            }
+            if (updateProductRequest.getStock() != null) {
+                product.setStock(updateProductRequest.getStock());
+            }
+            if (updateProductRequest.getProductName() != null) {
+                product.setProductName(updateProductRequest.getProductName());
+            }
+            if (updateProductRequest.getDescription() != null) {
+                product.setDesciption(updateProductRequest.getDescription());
+            }
+            if (updateProductRequest.getImg() != null) {
+                product.setImg(updateProductRequest.getImg());
+            }
+            if (updateProductRequest.getFinalPrice() != null) {
+                product.setFinalPrice(updateProductRequest.getFinalPrice());
+            }
+            if (updateProductRequest.getStatus() != null) {
+                product.setStatus(updateProductRequest.getStatus());
+            }
+            // Add more fields as necessary, following the same pattern
+
+            // Update the modified by field
+            product.setModifiedBy(SecurityUtil.getCurrentUsername());
+
+            // Save the updated product
             Product updatedProduct = productRepository.save(product);
+
+            // Map the updated product to the response
             ProductResponse productResponse = modelMapper.map(updatedProduct, ProductResponse.class);
             productResponse.setDescription(product.getDesciption());
             return productResponse;
