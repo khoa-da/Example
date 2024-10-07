@@ -35,4 +35,7 @@ public class ProductCustomization extends BaseEntity{
 
     @Column(name = "TotalPrice", precision = 10, scale = 2)
     private BigDecimal totalPrice;
+
+    @Column(name= "Reason")
+    private String reason;
 }

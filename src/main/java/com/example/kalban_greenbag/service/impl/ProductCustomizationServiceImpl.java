@@ -142,6 +142,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             newProductCustomization.setTotalPrice(
                     addProductCustomizationRequest.getTotalPrice().add(product.getFinalPrice())
             );
+            newProductCustomization.setReason(null);
             ProductCustomization savedProductCustomization = productCustomizationRepository.save(newProductCustomization);
 
             return modelMapper.map(savedProductCustomization, ProductCustomizationResponse.class);
@@ -195,6 +196,9 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
                                 "Customization Option not found",
                                 "The option with the provided ID does not exist."));
                 productCustomization.setOptionID(customizationOption); // Use setOption instead of setOptionID
+            }
+            if (updateProductCustomizationRequest.getReason() != null) {
+                productCustomization.setReason(updateProductCustomizationRequest.getReason());
             }
 
             // Cập nhật thông tin người sửa đổi
