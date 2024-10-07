@@ -29,4 +29,5 @@ public class ProductCustomizationResponse extends BaseResponse{
     private UUID userId;
     private BigDecimal totalPrice;
     private ProductResponse productID;
+    private String reason;
 }

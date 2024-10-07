@@ -18,4 +18,5 @@ public class UpdateProductCustomizationRequest {
     private String status;
     private String customValue;
     private BigDecimal totalPrice;
+    private String reason;
 }
