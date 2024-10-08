@@ -69,7 +69,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByOrderByCreatedDate(pageable);
+            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByOrderByCreatedDateDesc(pageable);
             List<ProductCustomizationResponse> productCustomizationResponses = productCustomizationList.stream()
                     .map(productCustomization -> modelMapper.map(productCustomization, ProductCustomizationResponse.class))
                     .toList();
@@ -99,7 +99,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByStatusOrderByCreatedDateDesc(ConstStatus.ACTIVE_STATUS, pageable);
             List<ProductCustomizationResponse> productCustomizationResponses = productCustomizationList.stream()
                     .map(productCustomization -> modelMapper.map(productCustomization, ProductCustomizationResponse.class))
                     .toList();
@@ -250,7 +250,7 @@ public class ProductCustomizationServiceImpl implements IProductCustomizationSer
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByUserIdOrderByCreatedDate(userId, pageable);
+            List<ProductCustomization> productCustomizationList = productCustomizationRepository.findAllByUserIdOrderByCreatedDateDesc(userId, pageable);
             List<ProductCustomizationResponse> productCustomizationResponses = productCustomizationList.stream()
                     .map(productCustomization -> modelMapper.map(productCustomization, ProductCustomizationResponse.class))
                     .toList();

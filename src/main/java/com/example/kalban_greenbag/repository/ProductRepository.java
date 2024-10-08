@@ -13,8 +13,8 @@ import java.util.UUID;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
-    List<Product> findAllByOrderByCreatedDate(Pageable pageable);
-    List<Product> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
+    List<Product> findAllByOrderByCreatedDateDesc(Pageable pageable);
+    List<Product> findAllByStatusOrderByCreatedDateDesc(String status, Pageable pageable);
     int countByStatus(String status);
     @Transactional
     @Modifying

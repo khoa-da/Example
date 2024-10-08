@@ -11,9 +11,9 @@ import java.util.UUID;
 
 @Repository
 public interface ProductCustomizationRepository extends JpaRepository<ProductCustomization, UUID>{
-    List<ProductCustomization> findAllByOrderByCreatedDate(Pageable pageable);
-    List<ProductCustomization> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
-    List<ProductCustomization> findAllByUserIdOrderByCreatedDate(UUID userId, Pageable pageable);
+    List<ProductCustomization> findAllByOrderByCreatedDateDesc(Pageable pageable);
+    List<ProductCustomization> findAllByStatusOrderByCreatedDateDesc(String status, Pageable pageable);
+    List<ProductCustomization> findAllByUserIdOrderByCreatedDateDesc(UUID userId, Pageable pageable);
     int countByStatus(String status);
     int countByUserId(UUID id);
 }
