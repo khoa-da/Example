@@ -64,7 +64,7 @@ public class ProductServiceImpl implements IProductService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            List<Product> productList = productRepository.findAllByOrderByCreatedDate(pageable);
+            List<Product> productList = productRepository.findAllByOrderByCreatedDateDesc(pageable);
             List<ProductResponse> productResponses = productList.stream()
                     .map(product -> {
                         ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
@@ -99,7 +99,7 @@ public class ProductServiceImpl implements IProductService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            List<Product> productList = productRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+            List<Product> productList = productRepository.findAllByStatusOrderByCreatedDateDesc(ConstStatus.ACTIVE_STATUS, pageable);
             List<ProductResponse> productResponses = productList.stream()
                     .map(product -> {
                         ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);

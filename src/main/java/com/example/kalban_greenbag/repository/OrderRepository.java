@@ -17,8 +17,8 @@ import java.util.UUID;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID> {
 
-    Page<Order> findAllByOrderByCreatedDate(Pageable pageable);
-    List<Order> findAllByStatusOrderByCreatedDate(String status, Pageable pageable);
+    Page<Order> findAllByOrderByCreatedDateDesc(Pageable pageable);
+    List<Order> findAllByStatusOrderByCreatedDateDesc(String status, Pageable pageable);
     Page<Order> findByOrderCode(long orderCode, Pageable pageable);
 
     @Query("SELECT o FROM Order o WHERE o.userID.id = :userId ORDER BY o.createdDate DESC")

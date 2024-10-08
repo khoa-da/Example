@@ -113,7 +113,7 @@ public class OrderServiceImpl implements IOrderService {
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, cacheKey)) {
                 orderResponseList = (List<OrderResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, cacheKey);
             } else {
-                Page<Order> ordersPage = orderRepository.findAllByOrderByCreatedDate(pageable);
+                Page<Order> ordersPage = orderRepository.findAllByOrderByCreatedDateDesc(pageable);
                 orderResponseList = ordersPage.stream()
                         .map(order -> modelMapper.map(order, OrderResponse.class))
                         .toList();
@@ -162,7 +162,7 @@ public class OrderServiceImpl implements IOrderService {
             if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders)) {
                 orderResponseList = (List<OrderResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders);
             } else {
-                List<Order> orders = orderRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
+                List<Order> orders = orderRepository.findAllByStatusOrderByCreatedDateDesc(ConstStatus.ACTIVE_STATUS, pageable);
                 orderResponseList = orders.stream()
                         .map(order -> {
                             OrderResponse response = modelMapper.map(order, OrderResponse.class);
