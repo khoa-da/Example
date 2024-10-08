@@ -6,6 +6,7 @@ import com.example.kalban_greenbag.converter.RoleConverter;
 import com.example.kalban_greenbag.converter.UserConverter;
 import com.example.kalban_greenbag.dto.request.user.CreateUserRequest;
 import com.example.kalban_greenbag.dto.request.user.LoginRequest;
+import com.example.kalban_greenbag.dto.request.user.UpdateUserRequest;
 import com.example.kalban_greenbag.dto.response.JwtAuthenticationResponse;
 import com.example.kalban_greenbag.dto.response.user.UserResponse;
 import com.example.kalban_greenbag.entity.Role;
@@ -230,4 +231,50 @@ public class UserServiceImpl implements IUserService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+    @Override
+    public UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest) throws BaseException {
+        try {
+            // Tìm người dùng theo ID
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isEmpty()) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), ConstError.User.USER_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+            }
+            User user = userOptional.get();
+
+            // Cập nhật các trường không null từ UpdateUserRequest
+            if (updateUserRequest.getUsername() != null) {
+                user.setUsername(updateUserRequest.getUsername());
+            }
+
+            if (updateUserRequest.getPassword() != null) {
+                user.setPassword(passwordEncoder.encode(updateUserRequest.getPassword())); // Mã hóa mật khẩu
+            }
+            if (updateUserRequest.getEmail() != null) {
+                user.setEmail(updateUserRequest.getEmail());
+            }
+            if (updateUserRequest.getPhoneNumber() != null) {
+                user.setPhoneNumber(updateUserRequest.getPhoneNumber());
+            }
+            if (updateUserRequest.getRoleName() != null) {
+                Role role = RoleConverter.responseToEntity(roleService.findByName(updateUserRequest.getRoleName()));
+                user.setRole(role);
+            }
+            if (updateUserRequest.getFullName() != null) {
+                user.setFullName(updateUserRequest.getFullName());
+            }
+            if (updateUserRequest.getAddress() != null) {
+                user.setAddress(updateUserRequest.getAddress());
+            }
+
+            // Lưu lại thông tin người dùng đã cập nhật
+            userRepository.save(user);
+            return UserConverter.toResponse(user);
+        } catch (Exception baseException) {
+            if (baseException instanceof BaseException) {
+                throw baseException;
+            }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
 }

@@ -14,4 +14,5 @@ public class OrderItemResponseData extends BaseResponse implements Serializable 
     private String name;
     private Integer quantity;
     private Integer price;
+
 }

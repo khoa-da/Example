@@ -28,4 +28,5 @@ public class OrderItemResponse extends BaseResponse implements Serializable {
     private Integer quantity;
     private BigDecimal unitPrice;
     private ProductResponse product;
+    private Boolean isReview;
 }

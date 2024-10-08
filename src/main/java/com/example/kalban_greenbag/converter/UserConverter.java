@@ -13,6 +13,7 @@ public class UserConverter {
         userResponse.setId(user.getId());
         userResponse.setUsername(user.getUsername());
         userResponse.setCreatedDate(user.getCreatedDate());
+        userResponse.setFullName(user.getFullName());
         userResponse.setModifiedDate(user.getModifiedDate());
         userResponse.setCreatedBy(user.getCreatedBy());
         userResponse.setModifiedBy(user.getModifiedBy());
