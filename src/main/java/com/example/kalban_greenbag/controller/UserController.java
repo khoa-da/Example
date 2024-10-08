@@ -3,6 +3,7 @@ package com.example.kalban_greenbag.controller;
 import com.example.kalban_greenbag.constant.ConstAPI;
 import com.example.kalban_greenbag.dto.request.user.CreateUserRequest;
 import com.example.kalban_greenbag.dto.request.user.LoginRequest;
+import com.example.kalban_greenbag.dto.request.user.UpdateUserRequest;
 import com.example.kalban_greenbag.dto.response.JwtAuthenticationResponse;
 import com.example.kalban_greenbag.dto.response.user.UserResponse;
 import com.example.kalban_greenbag.exception.BaseException;
@@ -65,5 +66,12 @@ public class UserController {
         log.info("Getting all accounts with page: {}, limit: {}", page, limit);
 
         return userService.findAllByStatusTrue(page, limit);
+    }
+
+    @Operation(summary = "Update user", description = "API update user")
+    @PatchMapping(value = ConstAPI.UserAPI.UPDATE_USER + "/{userId}")
+    public UserResponse updateUser(@PathVariable("userId") UUID userId, @Valid @RequestBody UpdateUserRequest updateUserRequest) throws BaseException {
+        log.info("Updating user with id: {} with request: {}", userId, updateUserRequest);
+        return userService.updateUser(userId, updateUserRequest);
     }
 }

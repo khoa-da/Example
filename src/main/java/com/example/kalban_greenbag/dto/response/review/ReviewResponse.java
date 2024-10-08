@@ -1,6 +1,7 @@
 package com.example.kalban_greenbag.dto.response.review;
 
 import com.example.kalban_greenbag.dto.response.BaseResponse;
+import com.example.kalban_greenbag.dto.response.user.UserResponse;
 import com.example.kalban_greenbag.entity.Product;
 import com.example.kalban_greenbag.entity.User;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ public class ReviewResponse extends BaseResponse {
 
     private UUID productID;
 
-    private UUID userID;
+    private UserResponse user;
 
 
     private Integer rating;

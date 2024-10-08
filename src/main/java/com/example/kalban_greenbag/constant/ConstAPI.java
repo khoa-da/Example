@@ -12,6 +12,7 @@ public class ConstAPI {
         public static final String GET_ACCOUNT_BY_ID = "api/v1/account/";
         public static final String GET_ALL_ACCOUNT = "api/v1/account";
         public static  final String GET_ALL_ACCOUNT_ACTIVE = "api/v1/account-active";
+        public static  final String UPDATE_USER = "api/v1/account";
 
     }
 

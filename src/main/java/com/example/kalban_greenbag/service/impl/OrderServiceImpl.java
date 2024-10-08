@@ -15,11 +15,14 @@ import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
 import com.example.kalban_greenbag.repository.OrderRepository;
 import com.example.kalban_greenbag.repository.ProductRepository;
+import com.example.kalban_greenbag.repository.ReviewRepository;
 import com.example.kalban_greenbag.repository.UserRepository;
 import com.example.kalban_greenbag.service.IOrderService;
 import com.example.kalban_greenbag.service.IProductService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
 import com.example.kalban_greenbag.utils.ValidateUtil;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,7 +49,11 @@ public class OrderServiceImpl implements IOrderService {
     private UserRepository userRepository;
 
     @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
     private IProductService productService;
+
 
     @Autowired
     private ModelMapper modelMapper;
@@ -380,12 +387,35 @@ public class OrderServiceImpl implements IOrderService {
             }
 
             List<OrderResponse> orderResponses = orderPage.stream()
-                    .map(order -> {
-                        OrderResponse response = modelMapper.map(order, OrderResponse.class);
-                        response.setUserId(order.getUserID().getId());
-                        return response;
-                    })
-                    .toList();
+                .map(order -> {
+                    OrderResponse response = modelMapper.map(order, OrderResponse.class);
+                    response.setUserId(order.getUserID().getId());
+
+                    // Lấy tất cả các mục sản phẩm trong đơn hàng (order items)
+                    Set<OrderItem> orderItems = order.getOrderItems(); // Giả sử orderItems là Set
+
+                    // Chuyển đổi Set<OrderItem> thành List<OrderItemResponse>
+                    List<OrderItemResponse> orderItemResponses = orderItems.stream()
+                        .map(orderItem -> {
+                            UUID productId = orderItem.getProductID().getId();
+
+                            // Kiểm tra xem người dùng đã đánh giá sản phẩm này chưa
+                            boolean isReviewed = reviewRepository.existsByUserIdAndProductId(userId, productId);
+
+                            // Chuyển đổi OrderItem sang OrderItemResponse
+                            OrderItemResponse orderItemResponse = modelMapper.map(orderItem, OrderItemResponse.class);
+                            orderItemResponse.setIsReview(isReviewed); // Thiết lập isReview
+
+                            return orderItemResponse;
+                        })
+                        .collect(Collectors.toList());
+
+                    Set<OrderItemResponse> orderItemResponsesSet = new HashSet<>(orderItemResponses);
+                    response.setOrderItems(orderItemResponsesSet); // Cập nhật danh sách order items với kiểu Set
+
+                    return response;
+                })
+                .toList();
 
             PagingModel<OrderResponse> result = new PagingModel<>();
             result.setListResult(orderResponses);
@@ -398,6 +428,7 @@ public class OrderServiceImpl implements IOrderService {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }
+
 
 
 }

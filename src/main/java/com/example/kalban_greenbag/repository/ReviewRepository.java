@@ -18,4 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     int countByStatus(String status);
     @Query("SELECT r FROM Review r WHERE r.productID.id = :id ORDER BY r.createdDate ASC")
     List<Review> findAllByProductIdOrderByCreatedDate(UUID id, Pageable pageable);
+
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END FROM Review r WHERE r.userID.id = :userId AND r.productID.id = :productId")
+    boolean existsByUserIdAndProductId(UUID userId, UUID productId);
 }
