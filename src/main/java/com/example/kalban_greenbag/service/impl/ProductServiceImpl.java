@@ -42,7 +42,9 @@ public class ProductServiceImpl implements IProductService {
             if (product.isEmpty()) {
                 throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Product.PRODUCT_NOT_FOUND, ErrorCode.ERROR_404.getMessage());
             }
-            return modelMapper.map(product.get(), ProductResponse.class);
+            ProductResponse productResponse = modelMapper.map(product.get(), ProductResponse.class);
+            productResponse.setDescription(product.get().getDesciption());
+            return productResponse;
         } catch (Exception exception) {
             if (exception instanceof BaseException) {
                 throw exception;
@@ -64,7 +66,11 @@ public class ProductServiceImpl implements IProductService {
 
             List<Product> productList = productRepository.findAllByOrderByCreatedDate(pageable);
             List<ProductResponse> productResponses = productList.stream()
-                    .map(product -> modelMapper.map(product, ProductResponse.class))
+                    .map(product -> {
+                        ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
+                        productResponse.setDescription(product.getDesciption()); // Thêm dòng này để set description
+                        return productResponse;
+                    })
                     .toList();
 
 
@@ -95,7 +101,11 @@ public class ProductServiceImpl implements IProductService {
 
             List<Product> productList = productRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
             List<ProductResponse> productResponses = productList.stream()
-                    .map(product -> modelMapper.map(product, ProductResponse.class))
+                    .map(product -> {
+                        ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
+                        productResponse.setDescription(product.getDesciption()); // Thêm dòng này để set description
+                        return productResponse;
+                    })
                     .toList();
 
             result.setListResult(productResponses);
