@@ -21,8 +21,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     List<Order> findAllByStatusOrderByCreatedDateDesc(String status, Pageable pageable);
     Page<Order> findByOrderCode(long orderCode, Pageable pageable);
 
-    @Query("SELECT o FROM Order o WHERE o.userID.id = :userId ORDER BY o.createdDate DESC")
-    Page<Order> findAllByUserId(@Param("userId") UUID userId, Pageable pageable);
+    @Query("SELECT o FROM Order o WHERE o.userID.id = :userId AND o.status = 'ACTIVE' ORDER BY o.createdDate DESC")
+    Page<Order> findAllByUserIdAndStatusActive(@Param("userId") UUID userId, Pageable pageable);
 
     Order findByOrderCode(long orderCode);
 
