@@ -21,7 +21,8 @@ import com.example.kalban_greenbag.service.IOrderService;
 import com.example.kalban_greenbag.service.IProductService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
 import com.example.kalban_greenbag.utils.ValidateUtil;
-import java.util.HashSet;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -389,7 +386,12 @@ public class OrderServiceImpl implements IOrderService {
             }
 
             if (orderPage.isEmpty()) {
-                throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Order.ORDER_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
+                PagingModel<OrderResponse> result = new PagingModel<>();
+                result.setListResult(Collections.emptyList()); // Danh sách trống
+                result.setPage(page);
+                result.setTotalPage(0); // Vì không có dữ liệu, tổng số trang là 0
+                result.setLimit(limit);
+                return result;
             }
 
             List<OrderResponse> orderResponses = orderPage.stream()
