@@ -29,6 +29,5 @@ public class UpdateBaseModelRequest {
     @DecimalMin(value = "0.00", message = "Base price must be at least 0")
     private BigDecimal basePrice;
 
-    @NotNull
     private UUID categoryID;
 }
