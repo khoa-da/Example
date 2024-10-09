@@ -132,7 +132,7 @@ public class PayOSServiceImpl implements IPayOSService {
                     checkAndReduceProductStock(orderItem);
                 }
             } else if (order.getStatus().equals(ConstStatus.PayOsStatus.PAYOS_STATUS_CANCELLED)) {
-                orderToUpdate.setOrderStatus(ConstStatus.OrderStatus.ORDER_STATUS_CANCELLED);
+                orderToUpdate.setStatus(ConstStatus.INACTIVE_STATUS);
             } else {
                 orderToUpdate.setOrderStatus(ConstStatus.OrderStatus.ORDER_STATUS_PENDING);
             }

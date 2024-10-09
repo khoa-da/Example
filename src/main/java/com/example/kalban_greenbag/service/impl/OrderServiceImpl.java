@@ -379,8 +379,7 @@ public class OrderServiceImpl implements IOrderService {
 
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            // Fetching the orders by user ID
-            Page<Order> orderPage = orderRepository.findAllByUserId(userId, pageable);
+            Page<Order> orderPage = orderRepository.findAllByUserIdAndStatusActive(userId, pageable);
 
             if (orderPage.isEmpty()) {
                 throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Order.ORDER_NOT_FOUND, ErrorCode.ERROR_500.getMessage());
@@ -391,27 +390,23 @@ public class OrderServiceImpl implements IOrderService {
                     OrderResponse response = modelMapper.map(order, OrderResponse.class);
                     response.setUserId(order.getUserID().getId());
 
-                    // Lấy tất cả các mục sản phẩm trong đơn hàng (order items)
-                    Set<OrderItem> orderItems = order.getOrderItems(); // Giả sử orderItems là Set
+                    Set<OrderItem> orderItems = order.getOrderItems();
 
-                    // Chuyển đổi Set<OrderItem> thành List<OrderItemResponse>
                     List<OrderItemResponse> orderItemResponses = orderItems.stream()
                         .map(orderItem -> {
                             UUID productId = orderItem.getProductID().getId();
 
-                            // Kiểm tra xem người dùng đã đánh giá sản phẩm này chưa
                             boolean isReviewed = reviewRepository.existsByUserIdAndProductId(userId, productId);
 
-                            // Chuyển đổi OrderItem sang OrderItemResponse
                             OrderItemResponse orderItemResponse = modelMapper.map(orderItem, OrderItemResponse.class);
-                            orderItemResponse.setIsReview(isReviewed); // Thiết lập isReview
+                            orderItemResponse.setIsReview(isReviewed);
 
                             return orderItemResponse;
                         })
                         .collect(Collectors.toList());
 
                     Set<OrderItemResponse> orderItemResponsesSet = new HashSet<>(orderItemResponses);
-                    response.setOrderItems(orderItemResponsesSet); // Cập nhật danh sách order items với kiểu Set
+                    response.setOrderItems(orderItemResponsesSet);
 
                     return response;
                 })
