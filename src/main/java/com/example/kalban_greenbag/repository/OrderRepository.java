@@ -24,6 +24,12 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Query("SELECT o FROM Order o WHERE o.userID.id = :userId AND o.status = 'ACTIVE' ORDER BY o.createdDate DESC")
     Page<Order> findAllByUserIdAndStatusActive(@Param("userId") UUID userId, Pageable pageable);
 
+    @Query("SELECT o FROM Order o WHERE o.userID.id = :userId AND o.status = 'INACTIVE' ORDER BY o.createdDate DESC")
+    Page<Order> findAllByUserIdAndStatusInactive(@Param("userId") UUID userId, Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE o.userID.id = :userId ORDER BY o.createdDate DESC")
+    Page<Order> findAllByUserId(@Param("userId") UUID userId, Pageable pageable);
+
     Order findByOrderCode(long orderCode);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +

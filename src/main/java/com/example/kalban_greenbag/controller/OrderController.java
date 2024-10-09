@@ -69,9 +69,10 @@ public class OrderController {
     @GetMapping(value = ConstAPI.OrderAPI.GET_ORDERS_BY_USER_ID + "{userId}")
     public PagingModel<OrderResponse> getOrdersByUserId(
             @PathVariable("userId") UUID userId,
+            @RequestParam(value = "status", required = false) String status,
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
-        return orderService.getOrderByUserId(userId, page, limit);
+        return orderService.getOrderByUserId(userId, page, limit, status);
     }
 
     @Operation(summary = "Get all orders by order code", description = "API get all orders by order code with pagination")
