@@ -368,7 +368,7 @@ public class OrderServiceImpl implements IOrderService {
 
 
     @Override
-    public PagingModel<OrderResponse> getOrderByUserId(UUID userId, Integer page, Integer limit) throws BaseException {
+    public PagingModel<OrderResponse> getOrderByUserId(UUID userId, Integer page, Integer limit, String status) throws BaseException {
         try {
             if (page == null || page < 1) {
                 page = 1;
@@ -378,8 +378,15 @@ public class OrderServiceImpl implements IOrderService {
             }
 
             Pageable pageable = PageRequest.of(page - 1, limit);
+            Page<Order> orderPage;
 
-            Page<Order> orderPage = orderRepository.findAllByUserIdAndStatusActive(userId, pageable);
+            if (ConstStatus.ACTIVE_STATUS.equals(status)) {
+                orderPage = orderRepository.findAllByUserIdAndStatusActive(userId, pageable);
+            } else if (ConstStatus.INACTIVE_STATUS.equals(status)) {
+                orderPage = orderRepository.findAllByUserIdAndStatusInactive(userId, pageable);
+            } else {
+                orderPage = orderRepository.findAllByUserId(userId, pageable);
+            }
 
             if (orderPage.isEmpty()) {
                 throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Order.ORDER_NOT_FOUND, ErrorCode.ERROR_500.getMessage());

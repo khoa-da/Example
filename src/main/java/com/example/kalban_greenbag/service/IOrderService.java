@@ -16,6 +16,6 @@ public interface IOrderService extends IGenericService<OrderResponse> {
     Boolean changeStatus(UUID id) throws BaseException;
     void updateOrderTotalAmount(UUID orderId, BigDecimal totalAmount) throws BaseException;
     PagingModel<OrderResponse> getOrderByOrderCode(long orderCode, Integer page, Integer limit) throws BaseException;
-    PagingModel<OrderResponse> getOrderByUserId(UUID userId, Integer page, Integer limit) throws BaseException;
+    PagingModel<OrderResponse> getOrderByUserId(UUID userId, Integer page, Integer limit, String status) throws BaseException;
 }
 
