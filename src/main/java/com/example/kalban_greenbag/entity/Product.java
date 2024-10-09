@@ -28,7 +28,7 @@ public class Product extends BaseEntity{
     @Column(name = "ProductName", length = 100, unique = true)
     private String productName;
 
-    @Column(name = "Desciption", length = 200)
+    @Column(name = "Desciption", columnDefinition = "nvarchar(max)")
     private String desciption;
 
     @Column(name = "Img")
