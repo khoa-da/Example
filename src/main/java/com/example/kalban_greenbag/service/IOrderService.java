@@ -8,6 +8,8 @@ import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public interface IOrderService extends IGenericService<OrderResponse> {
@@ -17,5 +19,10 @@ public interface IOrderService extends IGenericService<OrderResponse> {
     void updateOrderTotalAmount(UUID orderId, BigDecimal totalAmount) throws BaseException;
     PagingModel<OrderResponse> getOrderByOrderCode(long orderCode, Integer page, Integer limit) throws BaseException;
     PagingModel<OrderResponse> getOrderByUserId(UUID userId, Integer page, Integer limit, String status) throws BaseException;
+    List<OrderResponse> getOrderByCriteria(
+            Date startDate,
+            Date endDate,
+            String status,
+            String orderStatus) throws BaseException;
 }
 

@@ -12,8 +12,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -82,5 +85,19 @@ public class OrderController {
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         return orderService.getOrderByOrderCode(orderCode, page, limit);
+    }
+
+    @Operation(summary = "Get order by criteria", description = "API get order by criteria")
+    @GetMapping(value = ConstAPI.OrderAPI.GET_ORDER_BY_CRITERIA)
+    public List<OrderResponse> getOrderByCriteria(
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "dd-MM-yyyy") Date startDate,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "dd-MM-yyyy") Date endDate,
+
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "orderStatus", required = false) String orderStatus) throws BaseException {
+        return orderService.getOrderByCriteria(startDate, endDate, status, orderStatus);
     }
 }

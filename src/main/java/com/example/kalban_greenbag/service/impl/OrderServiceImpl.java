@@ -21,7 +21,8 @@ import com.example.kalban_greenbag.service.IOrderService;
 import com.example.kalban_greenbag.service.IProductService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
 import com.example.kalban_greenbag.utils.ValidateUtil;
-import java.util.HashSet;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -426,6 +423,32 @@ public class OrderServiceImpl implements IOrderService {
             result.setLimit(limit);
 
             return result;
+        } catch (Exception exception) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+
+    @Override
+    public List<OrderResponse> getOrderByCriteria(
+            Date startDate,
+            Date endDate,
+            String status,
+            String orderStatus) throws BaseException {
+        try {
+            List<Order> orders = orderRepository.findAllByCriteria(startDate, endDate, status, orderStatus);
+
+            if (orders.isEmpty()) {
+                throw new BaseException(ErrorCode.ERROR_404.getCode(), ConstError.Order.ORDER_NOT_FOUND, ErrorCode.ERROR_404.getMessage());
+            }
+
+            return orders.stream()
+                .map(order -> {
+                    OrderResponse response = modelMapper.map(order, OrderResponse.class);
+                    response.setUserId(order.getUserID().getId());
+                    return response;
+                })
+                .toList();
         } catch (Exception exception) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), exception.getMessage(), ErrorCode.ERROR_500.getMessage());
         }

@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +30,19 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     @Query("SELECT o FROM Order o WHERE o.userID.id = :userId ORDER BY o.createdDate DESC")
     Page<Order> findAllByUserId(@Param("userId") UUID userId, Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE " +
+            "(:startDate IS NULL AND :endDate IS NULL OR " +
+            "(:startDate IS NOT NULL AND :endDate IS NOT NULL AND " +
+            "(:startDate = :endDate AND o.createdDate = :startDate OR " +
+            "(o.createdDate >= :startDate AND o.createdDate <= :endDate))) ) " +
+            "AND (:status IS NULL OR o.status = :status) " +
+            "AND (:orderStatus IS NULL OR o.orderStatus = :orderStatus)")
+    List<Order> findAllByCriteria(@Param("startDate") Date startDate,
+                                  @Param("endDate") Date endDate,
+                                  @Param("status") String status,
+                                  @Param("orderStatus") String orderStatus);
+
 
     Order findByOrderCode(long orderCode);
 
