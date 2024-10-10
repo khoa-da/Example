@@ -1,0 +1,1 @@
+[![Build and deploy JAR app to Azure Web App - KALBAN](https://github.com/nguyenhuubao20/Kalban_Green_Bag/actions/workflows/main_kalban.yml/badge.svg)](https://github.com/nguyenhuubao20/Kalban_Green_Bag/actions/workflows/main_kalban.yml)
