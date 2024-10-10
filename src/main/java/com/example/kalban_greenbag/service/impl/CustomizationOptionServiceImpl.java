@@ -1,7 +1,7 @@
 package com.example.kalban_greenbag.service.impl;
 
 import com.example.kalban_greenbag.constant.ConstError;
-import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
+//import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
 import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.converter.CategoryConverter;
 import com.example.kalban_greenbag.dto.request.customization_option.AddCustomizationOptionRequest;
@@ -23,16 +23,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class CustomizationOptionServiceImpl implements ICustomizationOptionService {
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -71,10 +67,10 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
 
             CustomizationOptionResponse savedCustomizationResponse = modelMapper.map(savedCustomization, CustomizationOptionResponse.class);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return savedCustomizationResponse;
 
@@ -118,10 +114,10 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
             existingCustomization.setModifiedBy(modifier);
             CustomizationOption updatedCustomization = customizationOptionRepository.save(existingCustomization);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "*");
-            if (keysToDelete != null && !keysToDelete.isEmpty()) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "*");
+//            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return modelMapper.map(updatedCustomization, CustomizationOptionResponse.class);
 
@@ -151,10 +147,10 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
 
             customizationOptionRepository.save(customizationOption);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "*");
-            if (keysToDelete != null && !keysToDelete.isEmpty()) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "*");
+//            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return true;
         } catch (Exception exception) {
@@ -171,12 +167,12 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
     @Override
     public CustomizationOptionResponse findById(UUID id) throws BaseException {
         try {
-            String hashKeyForCustomizationOption = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + id.toString();
-            CustomizationOptionResponse customizationOptionByRedis = (CustomizationOptionResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForCustomizationOption);
-
-            if (!Objects.isNull(customizationOptionByRedis)) {
-                return customizationOptionByRedis;
-            }
+//            String hashKeyForCustomizationOption = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + id.toString();
+//            CustomizationOptionResponse customizationOptionByRedis = (CustomizationOptionResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForCustomizationOption);
+//
+//            if (!Objects.isNull(customizationOptionByRedis)) {
+//                return customizationOptionByRedis;
+//            }
 
             Optional<CustomizationOption> customizationOptionById = customizationOptionRepository.findById(id);
             if (!customizationOptionById.isPresent()) {
@@ -184,7 +180,7 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
             }
 
             CustomizationOptionResponse customizationOptionResponse = modelMapper.map(customizationOptionById.get(), CustomizationOptionResponse.class);
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForCustomizationOption, customizationOptionResponse);
+//            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForCustomizationOption, customizationOptionResponse);
 
             return customizationOptionResponse;
         } catch (Exception exception) {
@@ -208,19 +204,19 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
             result.setPage(page);
             Pageable pageable = (Pageable) PageRequest.of(page - 1, limit);
 
-            String hashKeyForAllCustomizationOptions = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "all:" + page + ":" + limit;
+//            String hashKeyForAllCustomizationOptions = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "all:" + page + ":" + limit;
 
             List<CustomizationOptionResponse> customizationOptionList;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions)) {
-                customizationOptionList = (List<CustomizationOptionResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions);
-            } else {
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions)) {
+//                customizationOptionList = (List<CustomizationOptionResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions);
+//            } else {
                 List<CustomizationOption> customizationOptions = customizationOptionRepository.findAllByOrderByCreatedDate(pageable);
                 customizationOptionList = customizationOptions.stream()
                         .map(option -> modelMapper.map(option, CustomizationOptionResponse.class))
                         .toList();
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions, customizationOptionList);
-            }
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForAllCustomizationOptions, customizationOptionList);
+//            }
 
             result.setListResult(customizationOptionList);
             long totalItems = customizationOptionRepository.count();
@@ -248,20 +244,20 @@ public class CustomizationOptionServiceImpl implements ICustomizationOptionServi
             result.setPage(page);
             Pageable pageable = (Pageable) PageRequest.of(page - 1, limit);
 
-            String hashKeyForActiveCustomizationOptions = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "all:active:" + page + ":" + limit;
+//            String hashKeyForActiveCustomizationOptions = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION + "all:active:" + page + ":" + limit;
 
             List<CustomizationOptionResponse> customizationOptionList;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForActiveCustomizationOptions)) {
-                customizationOptionList = (List<CustomizationOptionResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForActiveCustomizationOptions);
-            } else {
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForActiveCustomizationOptions)) {
+//                customizationOptionList = (List<CustomizationOptionResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForActiveCustomizationOptions);
+//            } else {
                 List<CustomizationOption> customizationOptions = customizationOptionRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
                 customizationOptionList = customizationOptions.stream()
                         .map(option -> modelMapper.map(option, CustomizationOptionResponse.class))
                         .toList();
 
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForActiveCustomizationOptions, customizationOptionList);
-            }
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CUSTOMIZATION_OPTION, hashKeyForActiveCustomizationOptions, customizationOptionList);
+//            }
 
             result.setListResult(customizationOptionList);
 
