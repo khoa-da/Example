@@ -6,6 +6,7 @@ import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.dto.request.order.AddOrderRequest;
 import com.example.kalban_greenbag.dto.request.order.UpdateOrderRequest;
 import com.example.kalban_greenbag.dto.response.order.OrderResponse;
+import com.example.kalban_greenbag.dto.response.order.PieChartResponse;
 import com.example.kalban_greenbag.dto.response.order_item.OrderItemResponse;
 import com.example.kalban_greenbag.entity.Order;
 import com.example.kalban_greenbag.entity.OrderItem;
@@ -22,6 +23,8 @@ import com.example.kalban_greenbag.service.IProductService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
 import com.example.kalban_greenbag.utils.ValidateUtil;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
@@ -433,6 +436,59 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    @Override
+    public List<PieChartResponse> getPieChartDataForOrderStatus(LocalDate fromDate, LocalDate toDate) throws BaseException {
+        try {
+            // Convert LocalDate to Instant
+            Instant fromInstant = fromDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+            Instant toInstant = toDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+
+            // Fetch orders within the date range
+            List<Order> orders = orderRepository.findByOrderDateBetween(fromInstant, toInstant);
+
+            // Group orders by status and count
+            Map<String, Long> statusCountMap = orders.stream()
+                    .collect(Collectors.groupingBy(Order::getOrderStatus, Collectors.counting()));
+
+            // Convert the map to List<PieChartResponse>
+            return statusCountMap.entrySet().stream()
+                    .map(entry -> new PieChartResponse(entry.getKey(), entry.getValue().intValue()))
+                    .collect(Collectors.toList());
+        } catch (Exception exception) {
+            throw new BaseException(
+                    ErrorCode.ERROR_500.getCode(),
+                    exception.getMessage(),
+                    ErrorCode.ERROR_500.getMessage()
+            );
+        }
+    }
+
+    @Override
+    public List<PieChartResponse> getPieChartDataForStatus(LocalDate fromDate, LocalDate toDate) throws BaseException {
+        try {
+            // Convert LocalDate to Instant
+            Instant fromInstant = fromDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+            Instant toInstant = toDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+
+            // Fetch orders within the date range
+            List<Order> orders = orderRepository.findByOrderDateBetween(fromInstant, toInstant);
+
+            // Group orders by status and count
+            Map<String, Long> statusCountMap = orders.stream()
+                    .collect(Collectors.groupingBy(Order::getStatus, Collectors.counting()));
+
+            // Convert the map to List<PieChartResponse>
+            return statusCountMap.entrySet().stream()
+                    .map(entry -> new PieChartResponse(entry.getKey(), entry.getValue().intValue()))
+                    .collect(Collectors.toList());
+        } catch (Exception exception) {
+            throw new BaseException(
+                    ErrorCode.ERROR_500.getCode(),
+                    exception.getMessage(),
+                    ErrorCode.ERROR_500.getMessage()
+            );
+        }
+    }
 
 
 }

@@ -4,6 +4,7 @@ import com.example.kalban_greenbag.constant.ConstAPI;
 import com.example.kalban_greenbag.dto.request.order.AddOrderRequest;
 import com.example.kalban_greenbag.dto.request.order.UpdateOrderRequest;
 import com.example.kalban_greenbag.dto.response.order.OrderResponse;
+import com.example.kalban_greenbag.dto.response.order.PieChartResponse;
 import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
 import com.example.kalban_greenbag.service.IOrderService;
@@ -12,8 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @CrossOrigin
@@ -82,5 +87,22 @@ public class OrderController {
             @RequestParam(value = "page", required = false) Integer page,
             @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         return orderService.getOrderByOrderCode(orderCode, page, limit);
+    }
+
+    @Operation(summary = "Get pie chart data", description = "API to get pie chart data of order statuses within a date range")
+    @GetMapping(value = ConstAPI.OrderAPI.GET_PIE_CHART_DATA)
+    public ResponseEntity<List<PieChartResponse>> getPieChartData(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) throws BaseException {
+        List<PieChartResponse> pieChartData = orderService.getPieChartDataForOrderStatus(fromDate, toDate);
+        return ResponseEntity.ok(pieChartData);
+    }
+    @Operation(summary = "Get pie chart data for status", description = "API to get pie chart data of order statuses within a date range")
+    @GetMapping(value = ConstAPI.OrderAPI.GET_PIE_CHART_DATA + "Status")
+    public ResponseEntity<List<PieChartResponse>> getPieChartDataForStatus(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) throws BaseException {
+        List<PieChartResponse> pieChartData = orderService.getPieChartDataForStatus(fromDate, toDate);
+        return ResponseEntity.ok(pieChartData);
     }
 }
