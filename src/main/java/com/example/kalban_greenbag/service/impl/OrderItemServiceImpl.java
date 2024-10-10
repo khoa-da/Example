@@ -1,7 +1,7 @@
 package com.example.kalban_greenbag.service.impl;
 
 import com.example.kalban_greenbag.constant.ConstError;
-import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
+//import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
 import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.dto.request.order_item.AddOrderItemRequest;
 import com.example.kalban_greenbag.dto.request.order_item.UpdateOrderItemRequest;
@@ -24,7 +24,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -50,9 +49,6 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Autowired
     private IOrderService orderService;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-
     public int totalItem() {
         return (int) orderItemRepository.count();
     }
@@ -60,12 +56,12 @@ public class OrderItemServiceImpl implements IOrderItemService {
     @Override
     public OrderItemResponse findById(UUID id) throws BaseException {
         try {
-            String redisKey = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + id.toString();
-
-            OrderItemResponse orderItemResponse = (OrderItemResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, redisKey);
-            if (orderItemResponse != null) {
-                return orderItemResponse;
-            }
+//            String redisKey = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + id.toString();
+//
+            OrderItemResponse orderItemResponse = null;
+//            if (orderItemResponse != null) {
+//                return orderItemResponse;
+//            }
 
             OrderItem orderItem = orderItemRepository.findById(id)
                     .orElseThrow(() -> new BaseException(
@@ -75,7 +71,7 @@ public class OrderItemServiceImpl implements IOrderItemService {
                     ));
 
             orderItemResponse = modelMapper.map(orderItem, OrderItemResponse.class);
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, redisKey, orderItemResponse);
+//            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM, redisKey, orderItemResponse);
 
             return orderItemResponse;
         } catch (Exception exception) {
@@ -207,10 +203,10 @@ public class OrderItemServiceImpl implements IOrderItemService {
             newOrderItem.setUnitPrice(unitPrice);
             newOrderItem.setCreatedBy(username);
             OrderItem savedOrderItem = orderItemRepository.save(newOrderItem);
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
             return modelMapper.map(savedOrderItem, OrderItemResponse.class);
 
         } catch (Exception exception) {
@@ -270,10 +266,10 @@ public class OrderItemServiceImpl implements IOrderItemService {
 
             OrderItem updatedOrderItem = orderItemRepository.save(existingOrderItem);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return modelMapper.map(updatedOrderItem, OrderItemResponse.class);
 
@@ -303,10 +299,10 @@ public class OrderItemServiceImpl implements IOrderItemService {
             existingOrderItem.setStatus(ConstStatus.INACTIVE_STATUS);
             orderItemRepository.save(existingOrderItem);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER_ITEM + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return true;
 

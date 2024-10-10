@@ -1,7 +1,7 @@
 package com.example.kalban_greenbag.service.impl;
 
 import com.example.kalban_greenbag.constant.ConstError;
-import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
+//import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
 import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.dto.request.base_model.AddBaseModelRequest;
 import com.example.kalban_greenbag.dto.request.base_model.UpdateBaseModelRequest;
@@ -20,7 +20,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,8 +39,8 @@ public class BaseModelServiceImpl implements IBaseModelService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+//    @Autowired
+//    private RedisTemplate<String, Object> redisTemplate;
 
     public int totalItem() {
         return (int) baseModelRepository.count();
@@ -70,11 +69,11 @@ public class BaseModelServiceImpl implements IBaseModelService {
             BaseModel savedBaseModel = baseModelRepository.save(newBaseModel);
             BaseModelResponse savedBaseModelResponse = modelMapper.map(savedBaseModel, BaseModelResponse.class);
 
-            String pattern = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "*";
-            Set<String> keysToDelete = redisTemplate.keys(pattern);
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            String pattern = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "*";
+//            Set<String> keysToDelete = redisTemplate.keys(pattern);
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return savedBaseModelResponse;
 
@@ -130,11 +129,11 @@ public class BaseModelServiceImpl implements IBaseModelService {
 
             BaseModelResponse updatedBaseModelResponse = modelMapper.map(updatedBaseModel, BaseModelResponse.class);
 
-            String pattern = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "*";
-            Set<String> keysToDelete = redisTemplate.keys(pattern);
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            String pattern = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "*";
+//            Set<String> keysToDelete = redisTemplate.keys(pattern);
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return updatedBaseModelResponse;
 
@@ -164,11 +163,11 @@ public class BaseModelServiceImpl implements IBaseModelService {
             baseModel.setModifiedBy(modifiedBy);
             baseModelRepository.save(baseModel);
 
-            String pattern = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "*";
-            Set<String> keysToDelete = redisTemplate.keys(pattern);
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            String pattern = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "*";
+//            Set<String> keysToDelete = redisTemplate.keys(pattern);
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return true;
 
@@ -185,12 +184,12 @@ public class BaseModelServiceImpl implements IBaseModelService {
     @Override
     public BaseModelResponse findById(UUID id) throws BaseException {
         try {
-            String hashKeyForModel = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + id.toString();
+//            String hashKeyForModel = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + id.toString();
 
-            BaseModelResponse baseModelResponseByRedis = (BaseModelResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForModel);
-            if (baseModelResponseByRedis != null) {
-                return baseModelResponseByRedis;
-            }
+//            BaseModelResponse baseModelResponseByRedis = (BaseModelResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForModel);
+//            if (baseModelResponseByRedis != null) {
+//                return baseModelResponseByRedis;
+//            }
             Optional<BaseModel> modelOptional = baseModelRepository.findById(id);
 
             if (!modelOptional.isPresent()) {
@@ -201,7 +200,7 @@ public class BaseModelServiceImpl implements IBaseModelService {
 
             BaseModel model = modelOptional.get();
             BaseModelResponse baseModelResponse = modelMapper.map(model, BaseModelResponse.class);
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForModel, baseModelResponse);
+//            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForModel, baseModelResponse);
 
             return baseModelResponse;
         } catch (Exception exception) {
@@ -227,19 +226,19 @@ public class BaseModelServiceImpl implements IBaseModelService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForBaseModel = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "all:" + page + ":" + limit;
+//            String hashKeyForBaseModel = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "all:" + page + ":" + limit;
 
             List<BaseModelResponse>  baseModelResponsesList = null;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel)) {
-                baseModelResponsesList = (List<BaseModelResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel);
-            } else {
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel)) {
+//                baseModelResponsesList = (List<BaseModelResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel);
+//            } else {
                 List<BaseModel> baseModels = baseModelRepository.findAllByOrderByCreatedDate(pageable);
                 baseModelResponsesList = baseModels.stream()
                         .map(baseModel -> modelMapper.map(baseModel, BaseModelResponse.class))
                         .collect(Collectors.toList());
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel, baseModelResponsesList);
-            }
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel, baseModelResponsesList);
+//            }
 
             result.setListResult(baseModelResponsesList);
 
@@ -265,19 +264,19 @@ public class BaseModelServiceImpl implements IBaseModelService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForBaseModel = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "all:" + "active:" + page + ":" + limit;
+//            String hashKeyForBaseModel = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL + "all:" + "active:" + page + ":" + limit;
 
             List<BaseModelResponse> baseModelResponseList;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel)) {
-                baseModelResponseList = (List<BaseModelResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel);
-            } else {
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel)) {
+//                baseModelResponseList = (List<BaseModelResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel);
+//            } else {
                 List<BaseModel> baseModels = baseModelRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
                 baseModelResponseList = baseModels.stream()
                         .map(baseModel -> modelMapper.map(baseModel, BaseModelResponse.class))
                         .collect(Collectors.toList());
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel, baseModelResponseList);
-            }
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_BASE_MODEL, hashKeyForBaseModel, baseModelResponseList);
+//            }
 
             result.setListResult(baseModelResponseList);
 

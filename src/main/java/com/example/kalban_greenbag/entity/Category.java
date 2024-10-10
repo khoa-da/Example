@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
-import org.springframework.data.redis.core.RedisHash;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
