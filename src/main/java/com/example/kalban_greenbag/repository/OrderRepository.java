@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +43,9 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     @Query("UPDATE Order o SET o.totalAmount = :totalAmount WHERE o.id = :orderId")
     void updateTotalAmount(@Param("orderId") UUID orderId, @Param("totalAmount") BigDecimal totalAmount);
 
-
     List<Order> findByOrderDateBetween(Instant fromInstant, Instant toInstant);
+
+    @Query("SELECT o FROM Order o WHERE o.createdDate BETWEEN :startDate AND :endDate")
+    List<Order> findByDateRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
 }
