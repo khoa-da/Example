@@ -3,6 +3,7 @@ package com.example.kalban_greenbag.service;
 import com.example.kalban_greenbag.dto.request.order.AddOrderRequest;
 import com.example.kalban_greenbag.dto.request.order.UpdateOrderRequest;
 import com.example.kalban_greenbag.dto.response.order.OrderResponse;
+import com.example.kalban_greenbag.dto.response.order.OrderStatusTotalResponse;
 import com.example.kalban_greenbag.dto.response.order.PieChartResponse;
 import com.example.kalban_greenbag.dto.response.order_item.OrderItemResponse;
 import com.example.kalban_greenbag.exception.BaseException;
@@ -22,5 +23,6 @@ public interface IOrderService extends IGenericService<OrderResponse> {
     PagingModel<OrderResponse> getOrderByUserId(UUID userId, Integer page, Integer limit, String status) throws BaseException;
     List<PieChartResponse> getPieChartDataForOrderStatus(LocalDate fromDate, LocalDate toDate) throws BaseException;
     List<PieChartResponse> getPieChartDataForStatus(LocalDate fromDate, LocalDate toDate) throws BaseException;
+    public List<OrderStatusTotalResponse> getTotalAmountAndCountByStatusAndDateRange(String startDate, String endDate) throws BaseException;
 }
 

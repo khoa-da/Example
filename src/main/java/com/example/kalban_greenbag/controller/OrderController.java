@@ -4,6 +4,7 @@ import com.example.kalban_greenbag.constant.ConstAPI;
 import com.example.kalban_greenbag.dto.request.order.AddOrderRequest;
 import com.example.kalban_greenbag.dto.request.order.UpdateOrderRequest;
 import com.example.kalban_greenbag.dto.response.order.OrderResponse;
+import com.example.kalban_greenbag.dto.response.order.OrderStatusTotalResponse;
 import com.example.kalban_greenbag.dto.response.order.PieChartResponse;
 import com.example.kalban_greenbag.exception.BaseException;
 import com.example.kalban_greenbag.model.PagingModel;
@@ -104,5 +105,14 @@ public class OrderController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) throws BaseException {
         List<PieChartResponse> pieChartData = orderService.getPieChartDataForStatus(fromDate, toDate);
         return ResponseEntity.ok(pieChartData);
+    }
+
+    @Operation(summary = "Get total amount and count by status and date range", description = "API to get total amount and count of orders by status and date range")
+    @GetMapping(value = ConstAPI.OrderAPI.GET_TOTAL_AMOUNT_AND_COUNT_BY_STATUS_AND_DATE_RANGE)
+    public ResponseEntity<List<OrderStatusTotalResponse>> getTotalAmountAndCountByStatusAndDateRange(
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate) throws BaseException {
+        List<OrderStatusTotalResponse> orderStatusTotalResponses = orderService.getTotalAmountAndCountByStatusAndDateRange(startDate, endDate);
+        return ResponseEntity.ok(orderStatusTotalResponses);
     }
 }

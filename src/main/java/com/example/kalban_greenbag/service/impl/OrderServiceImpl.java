@@ -6,6 +6,7 @@ import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.dto.request.order.AddOrderRequest;
 import com.example.kalban_greenbag.dto.request.order.UpdateOrderRequest;
 import com.example.kalban_greenbag.dto.response.order.OrderResponse;
+import com.example.kalban_greenbag.dto.response.order.OrderStatusTotalResponse;
 import com.example.kalban_greenbag.dto.response.order.PieChartResponse;
 import com.example.kalban_greenbag.dto.response.order_item.OrderItemResponse;
 import com.example.kalban_greenbag.entity.Order;
@@ -23,6 +24,7 @@ import com.example.kalban_greenbag.service.IProductService;
 import com.example.kalban_greenbag.utils.SecurityUtil;
 import com.example.kalban_greenbag.utils.ValidateUtil;
 
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -490,5 +492,77 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    @Override
+    public List<OrderStatusTotalResponse> getTotalAmountAndCountByStatusAndDateRange(String startDate, String endDate) throws BaseException {
+        try {
+            DateFormat dateFormatInput = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            DateFormat dateFormatOutput = new java.text.SimpleDateFormat("MM-dd-yyyy");
+
+            // Chuyển đổi chuỗi ngày vào kiểu Date
+            Date start = dateFormatInput.parse(startDate);
+            Date end = dateFormatInput.parse(endDate);
+
+            // Đặt thời gian bắt đầu là đầu ngày
+            Calendar startCalendar = Calendar.getInstance();
+            startCalendar.setTime(start);
+            startCalendar.set(Calendar.HOUR_OF_DAY, 0);
+            startCalendar.set(Calendar.MINUTE, 0);
+            startCalendar.set(Calendar.SECOND, 0);
+            startCalendar.set(Calendar.MILLISECOND, 0);
+            start = startCalendar.getTime();
+
+            // Đặt thời gian kết thúc là cuối ngày
+            Calendar endCalendar = Calendar.getInstance();
+            endCalendar.setTime(end);
+            endCalendar.set(Calendar.HOUR_OF_DAY, 23);
+            endCalendar.set(Calendar.MINUTE, 59);
+            endCalendar.set(Calendar.SECOND, 59);
+            endCalendar.set(Calendar.MILLISECOND, 999);
+            end = endCalendar.getTime();
+
+            // Lấy danh sách các đơn hàng trong khoảng thời gian
+            List<Order> orders = orderRepository.findByDateRange(start, end);
+
+            // Tạo danh sách để lưu tổng số tiền theo ngày và đếm số lượng đơn hàng
+            Map<String, BigDecimal> pendingTotals = new HashMap<>();
+            Map<String, BigDecimal> completedTotals = new HashMap<>();
+            Map<String, Integer> pendingCounts = new HashMap<>();
+            Map<String, Integer> completedCounts = new HashMap<>();
+
+            // Tính tổng số tiền và đếm số lượng cho mỗi ngày
+            for (Order order : orders) {
+                String dateKey = dateFormatOutput.format(order.getCreatedDate()); // Định dạng ngày
+
+                // Tính tổng theo trạng thái và đếm
+                if (order.getOrderStatus().equals("PENDING")) {
+                    pendingTotals.put(dateKey, pendingTotals.getOrDefault(dateKey, BigDecimal.ZERO).add(order.getTotalAmount()));
+                    pendingCounts.put(dateKey, pendingCounts.getOrDefault(dateKey, 0) + 1);
+                } else if (order.getOrderStatus().equals("COMPLETED")) {
+                    completedTotals.put(dateKey, completedTotals.getOrDefault(dateKey, BigDecimal.ZERO).add(order.getTotalAmount()));
+                    completedCounts.put(dateKey, completedCounts.getOrDefault(dateKey, 0) + 1);
+                }
+            }
+
+            // Chuẩn bị danh sách phản hồi
+            List<OrderStatusTotalResponse> responseList = new ArrayList<>();
+            for (String date : pendingTotals.keySet()) {
+                BigDecimal pendingTotal = pendingTotals.getOrDefault(date, BigDecimal.ZERO);
+                BigDecimal completedTotal = completedTotals.getOrDefault(date, BigDecimal.ZERO);
+                int pendingCount = pendingCounts.getOrDefault(date, 0);
+                int completedCount = completedCounts.getOrDefault(date, 0);
+                responseList.add(new OrderStatusTotalResponse(date, pendingTotal, pendingCount, completedTotal, completedCount));
+            }
+
+            // Sắp xếp danh sách phản hồi nếu cần (tùy chọn)
+            responseList.sort(Comparator.comparing(OrderStatusTotalResponse::getDate));
+
+            // Đảo ngược thứ tự của danh sách phản hồi
+            Collections.reverse(responseList);
+
+            return responseList;
+        } catch (Exception e) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), "Failed to retrieve total amounts and counts.", e.getMessage());
+        }
+    }
 
 }
