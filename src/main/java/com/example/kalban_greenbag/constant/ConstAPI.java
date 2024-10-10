@@ -90,6 +90,7 @@ public class ConstAPI {
         public static final String GET_ORDERS_BY_USER_ID = "api/v1/order/user/";
         public static final String GET_ORDER_BY_ORDER_CODE = "api/v1/order/order-code/";
         public static  final String GET_PIE_CHART_DATA = "api/v1/order/get-pie-chart";
+        public static final  String GET_TOTAL_AMOUNT_AND_COUNT_BY_STATUS_AND_DATE_RANGE = "api/v1/order/line-chart";
     }
 
     public static class PAYosAPI {
