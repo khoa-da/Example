@@ -1,7 +1,7 @@
 package com.example.kalban_greenbag.service.impl;
 
 import com.example.kalban_greenbag.constant.ConstError;
-import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
+//import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
 import com.example.kalban_greenbag.constant.ConstStatus;
 import com.example.kalban_greenbag.dto.request.order.AddOrderRequest;
 import com.example.kalban_greenbag.dto.request.order.UpdateOrderRequest;
@@ -34,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -60,8 +59,8 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+//    @Autowired
+//    private RedisTemplate<String, Object> redisTemplate;
 
     public int totalItem() {
         return (int) orderRepository.count();
@@ -70,13 +69,10 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public OrderResponse findById(UUID id) throws BaseException {
         try {
-            String cacheKey = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + id.toString();
             OrderResponse orderResponse;
 
-            if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey))) {
-                orderResponse = (OrderResponse) redisTemplate.opsForValue().get(cacheKey);
-            } else {
-                Order order = orderRepository.findById(id)
+
+            Order order = orderRepository.findById(id)
                         .orElseThrow(() -> new BaseException(
                                 ErrorCode.ERROR_500.getCode(),
                                 ConstError.Order.ORDER_NOT_FOUND,
@@ -84,10 +80,6 @@ public class OrderServiceImpl implements IOrderService {
                         ));
 
                 orderResponse = modelMapper.map(order, OrderResponse.class);
-
-                redisTemplate.opsForValue().set(cacheKey, orderResponse);
-            }
-
             return orderResponse;
 
         } catch (Exception exception) {
@@ -114,21 +106,15 @@ public class OrderServiceImpl implements IOrderService {
             }
 
             Pageable pageable = PageRequest.of(page - 1, limit);
-            String cacheKey = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "all:" + page + ":" + limit;
 
             PagingModel<OrderResponse> result = new PagingModel<>();
             List<OrderResponse> orderResponseList;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, cacheKey)) {
-                orderResponseList = (List<OrderResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, cacheKey);
-            } else {
                 Page<Order> ordersPage = orderRepository.findAllByOrderByCreatedDateDesc(pageable);
                 orderResponseList = ordersPage.stream()
                         .map(order -> modelMapper.map(order, OrderResponse.class))
                         .toList();
 
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, cacheKey, orderResponseList);
-            }
 
             result.setPage(page);
             result.setListResult(orderResponseList);
@@ -164,13 +150,13 @@ public class OrderServiceImpl implements IOrderService {
 
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForActiveOrders = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "all:active:" + page + ":" + limit;
+//            String hashKeyForActiveOrders = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "all:active:" + page + ":" + limit;
 
             List<OrderResponse> orderResponseList;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders)) {
-                orderResponseList = (List<OrderResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders);
-            } else {
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders)) {
+//                orderResponseList = (List<OrderResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders);
+//            } else {
                 List<Order> orders = orderRepository.findAllByStatusOrderByCreatedDateDesc(ConstStatus.ACTIVE_STATUS, pageable);
                 orderResponseList = orders.stream()
                         .map(order -> {
@@ -179,9 +165,9 @@ public class OrderServiceImpl implements IOrderService {
                             return response;
                         })
                         .toList();
-
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders, orderResponseList);
-            }
+//
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER, hashKeyForActiveOrders, orderResponseList);
+//            }
 
             result.setListResult(orderResponseList);
 
@@ -216,10 +202,10 @@ public class OrderServiceImpl implements IOrderService {
             newOrder.setCreatedBy(username);
             Order savedOrder = orderRepository.save(newOrder);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
             return modelMapper.map(savedOrder, OrderResponse.class);
         } catch (Exception exception) {
             if (exception instanceof BaseException) {
@@ -266,10 +252,10 @@ public class OrderServiceImpl implements IOrderService {
 
             Order updatedOrder = orderRepository.save(order);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return modelMapper.map(updatedOrder, OrderResponse.class);
         } catch (Exception exception) {
@@ -298,10 +284,10 @@ public class OrderServiceImpl implements IOrderService {
 
             orderRepository.save(order);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_ORDER + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return true;
         } catch (Exception exception) {

@@ -1,7 +1,7 @@
 package com.example.kalban_greenbag.service.impl;
 
 import com.example.kalban_greenbag.constant.ConstError;
-import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
+//import com.example.kalban_greenbag.constant.ConstHashKeyPrefix;
 import com.example.kalban_greenbag.converter.CategoryConverter;
 import com.example.kalban_greenbag.dto.request.category.AddCategoryRequest;
 import com.example.kalban_greenbag.dto.request.category.UpdateCategoryRequest;
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
+//import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -39,9 +39,6 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Autowired
     private JWTServiceImpl jwtServiceImpl;
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -63,10 +60,10 @@ public class CategoryServiceImpl implements ICategoryService {
 
             CategoryResponse savedCategoryResponse = modelMapper.map(savedCategory, CategoryResponse.class);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
-            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
+//            if (ValidateUtil.IsNotNullOrEmptyForSet(keysToDelete)) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return savedCategoryResponse;
 
@@ -105,10 +102,10 @@ public class CategoryServiceImpl implements ICategoryService {
 
             CategoryResponse updatedCategoryResponse = modelMapper.map(updatedCategory, CategoryResponse.class);
 
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
-            if (keysToDelete != null && !keysToDelete.isEmpty()) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
+//            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return updatedCategoryResponse;
 
@@ -139,10 +136,10 @@ public class CategoryServiceImpl implements ICategoryService {
             categoryRepository.save(category);
 
             // Delete all related cache entries
-            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
-            if (keysToDelete != null && !keysToDelete.isEmpty()) {
-                redisTemplate.delete(keysToDelete);
-            }
+//            Set<String> keysToDelete = redisTemplate.keys(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "*");
+//            if (keysToDelete != null && !keysToDelete.isEmpty()) {
+//                redisTemplate.delete(keysToDelete);
+//            }
 
             return true;
         } catch (Exception exception) {
@@ -158,12 +155,12 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public CategoryResponse findById(UUID id) throws BaseException {
         try {
-            String hashKeyForCategory = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + id.toString();
-            CategoryResponse categoryResponseByRedis = (CategoryResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory);
-
-            if (!Objects.isNull(categoryResponseByRedis)) {
-                return categoryResponseByRedis;
-            }
+//            String hashKeyForCategory = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + id.toString();
+//            CategoryResponse categoryResponseByRedis = (CategoryResponse) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory);
+//
+//            if (!Objects.isNull(categoryResponseByRedis)) {
+//                return categoryResponseByRedis;
+//            }
 
             Optional<Category> categoryById = categoryRepository.findById(id);
             boolean isCategoryExist = categoryById.isPresent();
@@ -173,7 +170,7 @@ public class CategoryServiceImpl implements ICategoryService {
             }
 
             CategoryResponse categoryResponse = modelMapper.map(categoryById.get(), CategoryResponse.class);
-            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory, categoryResponse);
+//            redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForCategory, categoryResponse);
             return categoryResponse;
         } catch (Exception exception) {
             if (exception instanceof BaseException) {
@@ -198,17 +195,17 @@ public class CategoryServiceImpl implements ICategoryService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForSkill = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "all:" + page + ":" + limit;
+//            String hashKeyForSkill = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "all:" + page + ":" + limit;
 
             List<CategoryResponse> categoryResponsesList = null;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill)) {
-                categoryResponsesList = (List<CategoryResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill);
-            } else {
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill)) {
+//                categoryResponsesList = (List<CategoryResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill);
+//            } else {
                 List<Category> categories = categoryRepository.findAllByOrderByCreatedDate(pageable);
                 categoryResponsesList = categories.stream().map(CategoryConverter::entityToResponse).toList();
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill, categoryResponsesList);
-            }
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill, categoryResponsesList);
+//            }
 
             result.setListResult(categoryResponsesList);
 
@@ -234,17 +231,17 @@ public class CategoryServiceImpl implements ICategoryService {
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
 
-            String hashKeyForSkill = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "all:"  + "active:" + page + ":" + limit;
+//            String hashKeyForSkill = ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY + "all:"  + "active:" + page + ":" + limit;
 
             List<CategoryResponse> categoryResponsesList = null;
 
-            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill)) {
-                categoryResponsesList = (List<CategoryResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill);
-            } else {
+//            if (redisTemplate.opsForHash().hasKey(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill)) {
+//                categoryResponsesList = (List<CategoryResponse>) redisTemplate.opsForHash().get(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill);
+//            } else {
                 List<Category> categories = categoryRepository.findAllByStatusOrderByCreatedDate(ConstStatus.ACTIVE_STATUS, pageable);
                 categoryResponsesList = categories.stream().map(CategoryConverter::entityToResponse).toList();
-                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill, categoryResponsesList);
-            }
+//                redisTemplate.opsForHash().put(ConstHashKeyPrefix.HASH_KEY_PREFIX_FOR_CATEGORY, hashKeyForSkill, categoryResponsesList);
+//            }
 
             result.setListResult(categoryResponsesList);
 
