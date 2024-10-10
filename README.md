@@ -25,10 +25,8 @@ This project is built using Java Spring Boot and is deployed to Azure Web App, e
 ## Technologies Used
 - **Java Spring Boot** - Back-end framework.
 - **Azure Web App** - Cloud platform for deployment.
-- **MySQL** - Relational database for storing user data.
-- **Docker** - Containerization for consistency across environments.
+- **SQL** - Relational database for storing user data.
 - **GitHub Actions** - CI/CD pipelines for automatic build and deployment.
-- **Thymeleaf** - Template engine for rendering HTML views.
 
 ## Installation
 Follow the steps below to get the application up and running on your local machine:
