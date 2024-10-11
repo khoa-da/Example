@@ -1,6 +1,7 @@
 package com.example.kalban_greenbag.controller;
 
 import com.example.kalban_greenbag.constant.ConstAPI;
+import com.example.kalban_greenbag.constant.ConstAPI.ProductAPI;
 import com.example.kalban_greenbag.dto.request.product.CreateProductRequest;
 import com.example.kalban_greenbag.dto.request.product.UpdateProductRequest;
 import com.example.kalban_greenbag.dto.response.product.ProductResponse;
@@ -79,6 +80,7 @@ public class ProductController {
         log.info("Getting all active products with page: {}, limit: {}", page, limit);
         return productService.findAllByStatusTrue(page, limit);
     }
+
     @Operation(summary = "Get all products by name", description = "API get all products by name")
     @GetMapping(value = ConstAPI.ProductAPI.GET_PRODUCT_BY_NAME)
     public PagingModel getAllProductsByName(@RequestParam(value = "page", required = false) Integer page,
@@ -96,5 +98,16 @@ public class ProductController {
                                                   @RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice
     )throws BaseException {
         return productService.getProductByPriceRange(minPrice, maxPrice, page, limit);
+    }
+
+    @Operation(summary = "Get all products by name and price range", description = "API get all products by name and price range")
+    @GetMapping(value = ProductAPI.GET_PRODUCT_FOR_USER)
+    public PagingModel getAllProductsByNameAndPriceRange(@RequestParam(value = "page", required = false) Integer page,
+        @RequestParam(value = "limit", required = false) Integer limit,
+        @RequestParam(value = "name", required = false) String name,
+        @RequestParam(value = "minPrice", required = false) BigDecimal minPrice,
+        @RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice
+    ) throws BaseException {
+        return productService.getProductByNameAndPriceRange(name, minPrice, maxPrice, page, limit);
     }
 }

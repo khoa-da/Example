@@ -29,6 +29,7 @@ public class ConstAPI {
         public static final String GET_ALL_PRODUCT_STATUS_TRUE = "api/v1/product/product-status-active";
         public static final String GET_PRODUCT_BY_NAME = "api/v1/product/product-name";
         public static final String GET_PRODUCT_BY_PRICE_RANGE = "api/v1/product/product-price-range";
+        public static final String GET_PRODUCT_FOR_USER = "api/v1/product/for-user";
     }
 
     public static class CategoryAPI {
