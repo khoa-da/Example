@@ -19,4 +19,6 @@ public interface IProductService extends IGenericService<ProductResponse>{
     boolean reduceProductStock(UUID productId, Integer stock) throws BaseException;
     PagingModel<ProductResponse> getProductByName(String name, Integer page, Integer limit) throws BaseException;
     PagingModel<ProductResponse> getProductByPriceRange(BigDecimal minPrice, BigDecimal maxPrice, Integer page, Integer limit) throws BaseException;
+    PagingModel<ProductResponse> getProductByNameAndPriceRange(String name, BigDecimal minPrice, BigDecimal maxPrice, Integer page, Integer limit) throws BaseException;
+
 }
