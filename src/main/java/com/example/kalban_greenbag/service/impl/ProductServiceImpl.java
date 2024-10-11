@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -215,6 +216,68 @@ public class ProductServiceImpl implements IProductService {
             int rowsAffected = productRepository.reduceProductStockById(productId, stock);
             return rowsAffected > 0;
         } catch (Exception exception) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(),
+                    exception.getMessage(),
+                    ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public PagingModel<ProductResponse> getProductByName(String name, Integer page, Integer limit) throws BaseException {
+        try{
+            if(page == null || limit == null){
+                page = 1;
+                limit = 10;
+            }
+            PagingModel<ProductResponse> result = new PagingModel<>();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            List<Product> productList = productRepository.findAllByProductNameContaining(name, pageable);
+            List<ProductResponse> productResponses = productList.stream()
+                    .map(product -> {
+                        ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
+                        return productResponse;
+                    })
+                    .toList();
+
+            result.setListResult(productResponses);
+            result.setTotalPage((int) Math.ceil((double) totalActiveItems() / limit));
+            result.setLimit(limit);
+
+            return result;
+        }catch (Exception exception) {
+            throw new BaseException(ErrorCode.ERROR_500.getCode(),
+                    exception.getMessage(),
+                    ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public PagingModel<ProductResponse> getProductByPriceRange(BigDecimal minPrice, BigDecimal maxPrice, Integer page, Integer limit) throws BaseException {
+        try{
+            if(page == null || limit == null){
+                page = 1;
+                limit = 10;
+            }
+            PagingModel<ProductResponse> result = new PagingModel<>();
+            result.setPage(page);
+            Pageable pageable = PageRequest.of(page - 1, limit);
+
+            List<Product> productList = productRepository.findAllByPriceRange(minPrice, maxPrice, pageable);
+            List<ProductResponse> productResponses = productList.stream()
+                    .map(product -> {
+                        ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
+                        return productResponse;
+                    })
+                    .toList();
+
+            result.setListResult(productResponses);
+            result.setTotalPage((int) Math.ceil((double) totalActiveItems() / limit));
+            result.setLimit(limit);
+
+            return result;
+        }catch (Exception exception) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(),
                     exception.getMessage(),
                     ErrorCode.ERROR_500.getMessage());
