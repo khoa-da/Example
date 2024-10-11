@@ -23,10 +23,10 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("UPDATE Product p SET p.stock = p.stock - :stock WHERE p.id = :productId AND p.stock >= :stock")
     int reduceProductStockById(UUID productId, Integer stock);
 
-    @Query("SELECT p FROM Product p WHERE p.productName LIKE %:productName% AND p.status = 'active'")
+    @Query("SELECT p FROM Product p WHERE p.productName LIKE %:productName% AND p.status = 'ACTIVE'")
     List<Product> findAllByProductNameContaining(@Param("productName") String productName, Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE p.finalPrice BETWEEN :minPrice AND :maxPrice AND p.status = 'active'")
+    @Query("SELECT p FROM Product p WHERE p.finalPrice BETWEEN :minPrice AND :maxPrice AND p.status = 'ACTIVE'")
     List<Product> findAllByPriceRange(@Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice, Pageable pageable);
 
 }
