@@ -234,7 +234,7 @@ public class ProductServiceImpl implements IProductService {
             Pageable pageable = PageRequest.of(page - 1, limit);
             List<Product> productList;
             if(name == null){
-                productList = productRepository.findAllByOrderByCreatedDateDesc(pageable);
+                productList = productRepository.findAllByStatusOrderByCreatedDateDesc(ConstStatus.ACTIVE_STATUS, pageable);
             }else {
                 productList = productRepository.findAllByProductNameContaining(name, pageable);
             }
@@ -269,7 +269,7 @@ public class ProductServiceImpl implements IProductService {
             Pageable pageable = PageRequest.of(page - 1, limit);
             List<Product> productList;
             if(minPrice == null && maxPrice == null){
-                productList = productRepository.findAllByOrderByCreatedDateDesc(pageable);
+                productList = productRepository.findAllByStatusOrderByCreatedDateDesc(ConstStatus.ACTIVE_STATUS, pageable);
             }else {
                 productList = productRepository.findAllByPriceRange(minPrice, maxPrice, pageable);
             }
