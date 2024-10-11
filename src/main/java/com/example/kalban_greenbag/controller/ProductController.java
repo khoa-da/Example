@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @CrossOrigin
@@ -77,5 +78,25 @@ public class ProductController {
                                                     @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         log.info("Getting all active products with page: {}, limit: {}", page, limit);
         return productService.findAllByStatusTrue(page, limit);
+    }
+
+
+    @Operation(summary = "Get all products by name", description = "API get all products by name")
+    @GetMapping(value = ConstAPI.ProductAPI.GET_PRODUCT_BY_NAME)
+    public PagingModel getAllProductsByName(@RequestParam(value = "page", required = false) Integer page,
+                                            @RequestParam(value = "limit", required = false) Integer limit,
+                                            @RequestParam(value = "name", required = false) String name
+    ) throws BaseException {
+        return productService.getProductByName(name ,page, limit);
+    }
+
+    @Operation(summary = "Get all products by price", description = "API get all products by price")
+    @GetMapping(value = ConstAPI.ProductAPI.GET_PRODUCT_BY_PRICE_RANGE)
+    public PagingModel getAllProductsByPriceRange(@RequestParam(value = "page", required = false) Integer page,
+                                                  @RequestParam(value = "limit", required = false) Integer limit,
+                                                  @RequestParam(value = "minPrice", required = false) BigDecimal minPrice,
+                                                  @RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice
+                                                  )throws BaseException {
+        return productService.getProductByPriceRange(minPrice, maxPrice, page, limit);
     }
 }
