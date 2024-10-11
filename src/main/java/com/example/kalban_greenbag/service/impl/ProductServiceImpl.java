@@ -232,8 +232,12 @@ public class ProductServiceImpl implements IProductService {
             PagingModel<ProductResponse> result = new PagingModel<>();
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
-
-            List<Product> productList = productRepository.findAllByProductNameContaining(name, pageable);
+            List<Product> productList;
+            if(name == null){
+                productList = productRepository.findAllByOrderByCreatedDateDesc(pageable);
+            }else {
+                productList = productRepository.findAllByProductNameContaining(name, pageable);
+            }
             List<ProductResponse> productResponses = productList.stream()
                     .map(product -> {
                         ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
@@ -263,8 +267,12 @@ public class ProductServiceImpl implements IProductService {
             PagingModel<ProductResponse> result = new PagingModel<>();
             result.setPage(page);
             Pageable pageable = PageRequest.of(page - 1, limit);
-
-            List<Product> productList = productRepository.findAllByPriceRange(minPrice, maxPrice, pageable);
+            List<Product> productList;
+            if(minPrice == null && maxPrice == null){
+                productList = productRepository.findAllByOrderByCreatedDateDesc(pageable);
+            }else {
+                productList = productRepository.findAllByPriceRange(minPrice, maxPrice, pageable);
+            }
             List<ProductResponse> productResponses = productList.stream()
                     .map(product -> {
                         ProductResponse productResponse = modelMapper.map(product, ProductResponse.class);
