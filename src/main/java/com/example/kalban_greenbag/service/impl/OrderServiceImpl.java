@@ -536,7 +536,7 @@ public class OrderServiceImpl implements IOrderService {
                 if (order.getOrderStatus().equals("PENDING")) {
                     pendingTotals.put(dateKey, pendingTotals.getOrDefault(dateKey, BigDecimal.ZERO).add(order.getTotalAmount()));
                     pendingCounts.put(dateKey, pendingCounts.getOrDefault(dateKey, 0) + 1);
-                } else if (order.getOrderStatus().equals("COMPLETED")) {
+                } else if (order.getOrderStatus().equals("PAID")) {
                     completedTotals.put(dateKey, completedTotals.getOrDefault(dateKey, BigDecimal.ZERO).add(order.getTotalAmount()));
                     completedCounts.put(dateKey, completedCounts.getOrDefault(dateKey, 0) + 1);
                 }
